@@ -27,7 +27,7 @@ class Connector {
 		String rhost = "localhost";
 		int rport = 3306;
 
-		String url = "jdbc:mysql://localhost:" + lport + "/5530u21?allowMultiQueries=true";
+		String url = "jdbc:mysql://localhost:" + lport + "/5530db21?allowMultiQueries=true";
 		String dbUser = "5530u21";
 		String dbPassword = "va9vg8h";
 		String driverName = "com.mysql.jdbc.Driver";
