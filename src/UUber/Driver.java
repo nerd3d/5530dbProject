@@ -25,18 +25,16 @@ public class Driver {
 		String pass;
 		System.out.println("Welcome to UUber database!");
 		System.out.println("Please enter Host Login Name:");
-		while ((login = in.readLine()) == null && login.length() == 0)
-			;
+		while ((login = in.readLine()) == null && login.length() == 0);
 		System.out.println("Please enter Host Password:");
 
 		Console c = System.console();
 		if (c != null) {
 			char[] pw = System.console().readPassword();
 			pass = new String(pw);
-			System.out.println(pass);
+
 		} else {
-			while ((pass = in.readLine()) == null && pass.length() == 0)
-				;
+			while ((pass = in.readLine()) == null && pass.length() == 0);
 		}
 		
 		try {
