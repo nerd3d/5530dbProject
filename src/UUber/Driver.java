@@ -19,6 +19,9 @@ public class Driver {
 		}
 	}
 
+	/* connects to database then launches user experience -> Login Menu 
+	 * Upon User Exit, the connection is closed properly.
+	 * */
 	private static void ConnectToDB() throws Exception {
 		BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
 		String login;
@@ -30,27 +33,33 @@ public class Driver {
 
 		Console c = System.console();
 		if (c != null) {
+			// Console supports hidden passwords. Get the password.
 			char[] pw = System.console().readPassword();
 			pass = new String(pw);
 
 		} else {
+			// Not in a legit Console, get the password in plain text.
 			while ((pass = in.readLine()) == null && pass.length() == 0);
 		}
 		
 		try {
 			connect = new Connector(login, pass);
+			
+			// Connection Established -> proceed to Login Menu
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw e;
 		} finally {
+			// before exiting program -> close connection properly
 			if (connect != null) {
 				try {
 					connect.CloseConnection();
 					System.out.println("Database connection terminated");
 				}
-
 				catch (Exception e) {
-					/* ignore close errors */ }
+					/* ignore close errors */ 
+				}
 			}
 		}
 	}
