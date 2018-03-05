@@ -4,7 +4,7 @@ import java.lang.*;
 import java.sql.*;
 import java.io.*;
 
-public class Driver {
+public class StartPoint {
 
 	static Connector connect = null;
 
