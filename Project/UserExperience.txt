@@ -1,0 +1,47 @@
+------------------------------------------
+Welcome to UUber. Please select an option:
+	1- Login
+	2- Create Account
+	3- Quit
+> 2
+
+Creating a new Account.
+Please enter your name:
+> Fred Fredington			## We many want to get all details here? ##
+Choose a unique Login Name:
+> FforFred
+That name is already taken.
+Choose a unique Login Name:
+> FforFred25
+Choose a password:
+> 12345
+
+Creating account for FforFred25. 	## full input review
+Continue? 
+(Y/N)> y
+
+Account created.
+
+------------------------------------------
+Welcome to UUber. Please select an option:
+	1- Login
+	2- Create Account
+	3- Quit
+> 1
+
+Login Name: > FforFred
+Password: > 12345
+Invalid Login and/or Password.
+
+Login Name: > FforFred25
+Password: > 12345
+
+-----------------------------------------------
+Hello Fred Fredington! Please select an option:
+	1- Reservations
+	2- Record Ride
+	3- Feedback
+	4- Quit
+> 4
+
+Goodbye!
