@@ -14,7 +14,7 @@ public class LoginUI {
 			System.out.println("2. Create Account");
 			System.out.println("3. Quit");
 
-			switch (getInput()) {
+			switch (Utils.getInput()) {
 			case "1":
 				Login();
 				break;
@@ -38,17 +38,19 @@ public class LoginUI {
 		String p;
 		// asks for login info
 		System.out.println("Please enter User Login:");
-		u = getInput();
+		u = Utils.getInput();
 		System.out.println("Please enter password:");
-		p = getInput();
+		p = Utils.getInput();
 		
 		//sanitizeInput(variable number of inputs)  <- to be implemented as own static class for all menus.
 		
 		// attempt login
-		// if successful: call MainMenu.showmenu
+		
+		// if login successful: call MainMenu.showmenu
 		if(u.equals("master") && p.equals("1234"))
 		{
-			System.out.println("Success, you have hacked the mainframe.");
+			System.out.println("Login successful.");
+			DatabaseUI.ShowMenu();
 		}
 		// else: return to showMenu with failure message.
 		else
@@ -68,7 +70,7 @@ public class LoginUI {
 		// you sure? (y/n) y -> return;
 		// n -> showmenu.
 		System.out.println("Are you sure you want to quit? (y/n)");
-		switch(getInput().toLowerCase()) {
+		switch(Utils.getInput().toLowerCase()) {
 		case "y":
 			System.out.println("Goodbye! Thank you for using UUber!");
 			return true;
@@ -78,11 +80,5 @@ public class LoginUI {
 			System.out.println("Invalid input. Please type 'y' or 'n'.");
 		}
 		return false;
-	}
-	private static String getInput() throws Exception{
-		String str;
-		BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
-		while((str = in.readLine()) == null && str.length() == 0);
-		return str;
 	}
 }
