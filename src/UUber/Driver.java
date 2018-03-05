@@ -9,11 +9,10 @@ public class Driver {
 	static Connector connect = null;
 
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-		System.out.println("Hello World");
 
 		try {
-			ConnectToDB();
+			//ConnectToDB();
+			LoginUI.ShowMenu();
 		} catch (Exception e) {
 			
 		}

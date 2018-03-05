@@ -34,8 +34,8 @@ public class LoginUI {
 	}
 
 	private static void Login() throws Exception{
-		String u = "";
-		String p = "";
+		String u;
+		String p;
 		// asks for login info
 		System.out.println("Please enter User Login:");
 		u = getInput();
@@ -46,7 +46,7 @@ public class LoginUI {
 		
 		// attempt login
 		// if successful: call MainMenu.showmenu
-		if(u == "master" && p == "1234")
+		if(u.equals("master") && p.equals("1234"))
 		{
 			System.out.println("Success, you have hacked the mainframe.");
 		}
@@ -70,6 +70,7 @@ public class LoginUI {
 		System.out.println("Are you sure you want to quit? (y/n)");
 		switch(getInput().toLowerCase()) {
 		case "y":
+			System.out.println("Goodbye! Thank you for using UUber!");
 			return true;
 		case "n":
 			return false;
