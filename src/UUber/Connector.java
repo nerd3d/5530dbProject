@@ -44,7 +44,7 @@ class Connector {
 			sesh = jsch.getSession(sshUser, sshHost, 22);
 			sesh.setPassword(sshPassword);
 			sesh.setConfig(config);
-			System.out.println("Attempting to conenct...");
+			System.out.println("Attempting to connect...");
 			sesh.connect(); // connect to host
 			System.out.println("Connected");
 			
