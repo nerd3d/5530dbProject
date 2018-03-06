@@ -15,24 +15,24 @@ public class DatabaseUI {
 
 			switch (Utils.getInput()) {
 			case "1":
-				//ReservationUI.ShowMenu();
-				System.out.println("not hooked up yet");
+				ReservationUI.ShowMenu();
+				//System.out.println("not hooked up yet");
 				break;
 			case "2":
-				//RidesUI.ShowMenu();
-				System.out.println("not hooked up yet");
+				RidesUI.ShowMenu();
+				//System.out.println("not hooked up yet");
 				break;
 			case "3":
-				//VehicleBrowserUI.ShowMenu();
-				System.out.println("not hooked up yet");
+				VehicleBrowserUI.ShowMenu();
+				//System.out.println("not hooked up yet");
 				break;
 			case "4":
-				//UserUI.ShowMenu();
-				System.out.println("not hooked up yet");
+				UserUI.ShowMenu();
+				//System.out.println("not hooked up yet");
 				break;
 			case "5":
-				//DriverUI.ShowMenu();
-				System.out.println("not hooked up yet");
+				DriverUI.ShowMenu();
+				//System.out.println("not hooked up yet");
 				break;
 			case "6":
 				if(Quit())
