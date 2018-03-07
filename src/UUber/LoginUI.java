@@ -61,6 +61,27 @@ public class LoginUI {
 	private static void CreateAccount() throws Exception{
 		// asks for login info and user details (try to validate user name as soon as
 		// entered)
+		String u;
+		String p;
+		// asks for login info
+		System.out.println("Please enter desired Login Name:");
+		u = Utils.getInput();
+		System.out.println("Please enter desired password:");
+		p = Utils.getInput();
+		
+		//sanitizeInput(variable number of inputs)  <- to be implemented as own static class for all menus.
+		
+		// attempt login
+		
+		// if login created, return to login screen
+		if(u.equals("master") && p.equals("1234"))
+		{
+			System.out.println("User "+ u +" created.");
+			return;//to login menu
+		}
+		// else: return to login screen with failure message.
+		else
+			System.out.println("Invalid user name or password.");
 		// attempt to create new user
 		// if successful: return to show menu, success message
 		// else: return to showMenu with failure message.
