@@ -1,7 +1,7 @@
 package UUber;
 
 public class UserUI {
-	public static void ShowMenu() throws Exception{
+	public static void ShowMenu() throws Exception {
 		while (true) {
 			// welcome and list options...wait for input
 			System.out.println("*** User Relations ***");
@@ -31,14 +31,27 @@ public class UserUI {
 
 	/*
 	 * Query users' trusted users true = trusted / false = mistrusted
-	 * */
+	 */
 	private static void DisplayTrusted(boolean trusted) throws Exception {
-		// TODO Auto-generated method stub
+		String query = "";
 
-		if(trusted)
-			System.out.println("Here are all of your trusted users\nblah...\nblah...");
-		else
-			System.out.println("Here are all of your mistrusted users\nblah...\nblah...");
+		if (trusted) {
+			System.out.println("*** Trusted Users ***");
+			query = "SELECT login2 ";
+			query += "FROM Trust";
+			query += "WHERE trusted = TRUE ";
+			query += "AND login = " + StartPoint.currentUser;
+			query += ";";
+		} else {
+			System.out.println("*** Mistrusted Users ***");
+			query = "SELECT login2 ";
+			query += "FROM Trust";
+			query += "WHERE trusted = FALSE ";
+			query += "AND login = " + StartPoint.currentUser;
+			query += ";";
+		}
+
+		System.out.println(query); // this will need to query, then parse results for output 
 		System.out.println("<press any key to go back>");
 		Utils.getInput();
 	}
