@@ -38,16 +38,16 @@ public class UserUI {
 		if (trusted) {
 			System.out.println("*** Trusted Users ***");
 			query = "SELECT login2 ";
-			query += "FROM Trust";
+			query += "FROM Trust ";
 			query += "WHERE trusted = TRUE ";
-			query += "AND login = '" + StartPoint.currentUser + "'" ;
+			query += "AND login = '" + Utils.currentUser + "'" ;
 			query += ";";
 		} else {
 			System.out.println("*** Mistrusted Users ***");
 			query = "SELECT login2 ";
-			query += "FROM Trust";
+			query += "FROM Trust ";
 			query += "WHERE trusted = FALSE ";
-			query += "AND login = '" + StartPoint.currentUser + "'" ;
+			query += "AND login = '" + Utils.currentUser + "'" ;
 			query += ";";
 		}
 

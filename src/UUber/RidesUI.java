@@ -41,9 +41,9 @@ public class RidesUI {
 	private static void DisplayRides() throws Exception {
 		String query = "";
 		
-		query += "SELECT vin, time ";
-		query += "FROM Reservation ";
-		query += "WHERE login = '" + StartPoint.currentUser + "'" ;
+		query += "SELECT vin, time, cost, num_persons, distance ";
+		query += "FROM Ride ";
+		query += "WHERE login = '" + Utils.currentUser + "'" ;
 		query += ";";
 
 		System.out.println("*** Past Ride Records ***");

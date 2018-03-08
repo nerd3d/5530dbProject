@@ -50,7 +50,7 @@ public class LoginUI {
 		if(u.equals("master") && p.equals("1234"))
 		{
 			System.out.println("Login successful.");
-			StartPoint.currentUser = u;
+			Utils.currentUser = u;
 			DatabaseUI.ShowMenu();
 		}
 		// else: return to showMenu with failure message.
@@ -95,7 +95,7 @@ public class LoginUI {
 		switch(Utils.getInput().toLowerCase()) {
 		case "y":
 			System.out.println("Goodbye! Thank you for using UUber!");
-			StartPoint.currentUser = "";
+			Utils.currentUser = "";
 			return true;
 		case "n":
 			return false;

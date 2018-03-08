@@ -7,7 +7,6 @@ import java.io.*;
 public class StartPoint {
 
 	static Connector connect = null;
-	static String currentUser = "";
 
 	public static void main(String[] args) {
 

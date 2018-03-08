@@ -68,9 +68,16 @@ public class ReservationUI {
 	 * Generate, modify and display Reservation related queries
 	 */
 	private static void DisplayReservations() throws Exception {
-		// get and display existing Reservations
-		System.out.println("Here are your reservations...");
-		System.out.println("blah...\nblah...\nblah...\nblah...");
+		String query = "";
+		
+		query += "SELECT vin, time ";
+		query += "FROM Reservation ";
+		query += "WHERE time > NOW() " ;
+		query += "AND login = '" + Utils.currentUser + "'";
+		query += ";";
+
+		System.out.println("*** Future Reservations ***");
+		System.out.println(query);
 		System.out.println("<press any key to go back>");
 		// add input loop and whatever
 		Utils.getInput();

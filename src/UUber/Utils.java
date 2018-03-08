@@ -4,6 +4,9 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 
 public class Utils {
+
+	static String currentUser = "";
+	
 	public static String getInput() throws Exception {
 		String str;
 		BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
