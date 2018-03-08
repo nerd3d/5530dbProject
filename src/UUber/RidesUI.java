@@ -39,9 +39,15 @@ public class RidesUI {
 	 * Query for rides related to user
 	 * */
 	private static void DisplayRides() throws Exception {
-		// TODO Auto-generated method stub
+		String query = "";
+		
+		query += "SELECT vin, time ";
+		query += "FROM Reservation ";
+		query += "WHERE login = '" + StartPoint.currentUser + "'" ;
+		query += ";";
 
-		System.out.println("Show history of rides...");
+		System.out.println("*** Past Ride Records ***");
+		System.out.println(query);
 		System.out.println("<press any key to go back>");
 		Utils.getInput();
 	}

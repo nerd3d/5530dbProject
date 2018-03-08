@@ -40,14 +40,14 @@ public class UserUI {
 			query = "SELECT login2 ";
 			query += "FROM Trust";
 			query += "WHERE trusted = TRUE ";
-			query += "AND login = " + StartPoint.currentUser;
+			query += "AND login = '" + StartPoint.currentUser + "'" ;
 			query += ";";
 		} else {
 			System.out.println("*** Mistrusted Users ***");
 			query = "SELECT login2 ";
 			query += "FROM Trust";
 			query += "WHERE trusted = FALSE ";
-			query += "AND login = " + StartPoint.currentUser;
+			query += "AND login = '" + StartPoint.currentUser + "'" ;
 			query += ";";
 		}
 
