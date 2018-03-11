@@ -2,7 +2,12 @@ package UUber;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.sql.ResultSet;
+import java.sql.Statement;
 
+/*
+ * The globally utilized class.
+ */
 public class Utils {
 
 	static String currentUser = "";
@@ -37,6 +42,7 @@ public class Utils {
 	};
 
 	public class TimeData {
+
 		public int year; // range 2018 - 9999
 		public Month month; // needs to be not NUL
 		public int day; // range 1 - 31 (month dependent)
@@ -105,5 +111,31 @@ public class Utils {
 			return false;
 		}
 
+	}
+
+	/*
+	 * If null return value, query failed. Please see comments at bottom for handling return value.
+	 */
+	public static ResultSet QueryHelper(String query, Statement stmt) throws Exception{
+		ResultSet result;
+		System.out.println("executing query:\n"+query);
+	 	try{
+		 	result=stmt.executeQuery(query);
+	 	}
+	 	catch(Exception e)
+	 	{
+	 		System.out.println("query failed to execute");
+	 		result = null;
+	 	}
+		return result;
+		//Handling return value:
+		/*
+		 * To print in columns:
+		 * while (result.next()) //next row
+			 {
+			        resultStringBuilder+=rs.getString("user")+"   "+rs.getString("psw")+"\n"; 
+			 }
+			 result.close();
+		 */
 	}
 }
