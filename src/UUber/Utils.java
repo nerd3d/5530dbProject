@@ -113,7 +113,7 @@ public class Utils {
 
 	}
 
-	/*
+	/*Executes sql query
 	 * If null return value, query failed. Please see comments at bottom for handling return value.
 	 */
 	public static ResultSet QueryHelper(String query, Statement stmt) throws Exception{
@@ -138,7 +138,7 @@ public class Utils {
 			 result.close();
 		 */
 	}
-	/*
+	/*Use for INSERT, UPDATE or DELETE
 	 * If -1 return value, error occurred. 0 means no rows changed. 1 means row changed.
 	 * 
 	 */
