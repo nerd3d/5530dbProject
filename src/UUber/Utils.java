@@ -118,7 +118,7 @@ public class Utils {
 	 */
 	public static ResultSet QueryHelper(String query, Statement stmt) throws Exception{
 		ResultSet result;
-		System.out.println("executing query:\n"+query);
+		System.out.println("executing query: "+query);
 	 	try{
 		 	result=stmt.executeQuery(query);
 	 	}
@@ -126,6 +126,32 @@ public class Utils {
 	 	{
 	 		System.out.println("query failed to execute");
 	 		result = null;
+	 	}
+		return result;
+		//Handling return value:
+		/*
+		 * To print in columns:
+		 * while (result.next()) //next row
+			 {
+			        resultStringBuilder+=rs.getString("user")+"   "+rs.getString("psw")+"\n"; 
+			 }
+			 result.close();
+		 */
+	}
+	/*
+	 * If -1 return value, error occurred. 0 means no rows changed. 1 means row changed.
+	 * 
+	 */
+	public static int UpdateHelper(String query, Statement stmt) throws Exception{
+		int result;
+		System.out.println("executing query: "+query);
+	 	try{
+		 	result=stmt.executeUpdate(query);
+	 	}
+	 	catch(Exception e)
+	 	{
+	 		System.out.println("query failed to execute");
+	 		result = -1;
 	 	}
 		return result;
 		//Handling return value:

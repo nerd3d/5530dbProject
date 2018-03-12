@@ -11,8 +11,8 @@ public class StartPoint {
 	public static void main(String[] args) {
 
 		try {
-			//ConnectToDB();
-			LoginUI.ShowMenu();
+			ConnectToDB();
+			//LoginUI.ShowMenu();
 		} catch (Exception e) {
 			
 		}

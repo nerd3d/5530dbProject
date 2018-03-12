@@ -47,9 +47,9 @@ class Connector {
 			System.out.println("Attempting to connect...");
 			sesh.connect(); // connect to host
 			System.out.println("Connected");
-			
+			String boundaddress ="0.0.0.0";
 			// set port forwarding
-			int aport = sesh.setPortForwardingL(lport, rhost, rport);
+			int aport = sesh.setPortForwardingL(boundaddress,lport, rhost, rport);
 			System.out.println("localhost:" + aport + " -> " + rhost + ":" + rport);
 			System.out.println("Port Forwarded");
 			

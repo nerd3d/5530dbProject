@@ -11,7 +11,7 @@ public class DatabaseUI {
 			System.out.println("3. Vehicles");
 			System.out.println("4. Users");
 			System.out.println("5. Drive");
-			System.out.println("6. Quit");
+			System.out.println("6. Logout");
 
 			switch (Utils.getInput()) {
 			case "1":
@@ -48,10 +48,10 @@ public class DatabaseUI {
 	private static boolean Quit() throws Exception{
 		// you sure? (y/n) y -> return;
 		// n -> showmenu.
-		System.out.println("Are you sure you want to quit? (y/n)");
+		System.out.println("Logout? (y/n)");
 		switch(Utils.getInput().toLowerCase()) {
 		case "y":
-			System.out.println("Goodbye! Thank you for using UUber!");
+			System.out.println("Logging Out..");
 			return true;
 		case "n":
 			return false;
