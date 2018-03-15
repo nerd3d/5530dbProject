@@ -43,7 +43,7 @@ public class StartPoint {
 		
 		try {
 			connect = new Connector(login, pass);
-			
+			Utils.stmt = connect.st;
 			// Connection Established -> proceed to Login Menu
 			LoginUI.ShowMenu();
 			

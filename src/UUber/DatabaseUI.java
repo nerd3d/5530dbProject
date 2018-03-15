@@ -1,41 +1,51 @@
 package UUber;
 
+import java.sql.ResultSet;
+
 public class DatabaseUI {
-	public static void ShowMenu() throws Exception{
+	public static boolean isDriver = false;
+
+	public static void ShowMenu() throws Exception {
+		// determine and set the isDriver boolean
+		ResultSet result = Utils.QueryHelper("SELECT * FROM Driver WHERE login = '" + Utils.currentUser + "'",
+				StartPoint.connect.st);
+		isDriver = result.next();
+
 		while (true) {
 			// welcome and list options...wait for input
 			System.out.println("*** UUber Main Menu ***");
 			System.out.println("Please make a selection:");
-			System.out.println("1. Reservation");
+			System.out.println("1. Reservations");
 			System.out.println("2. Rides");
 			System.out.println("3. Vehicles");
 			System.out.println("4. Users");
-			System.out.println("5. Drive");
-			System.out.println("6. Logout");
+			if (isDriver) {
+				System.out.println("5. Driver Options");
+				System.out.println("6. Logout");
+			} else {
+				System.out.println("5. Logout");
+			}
 
 			switch (Utils.getInput()) {
 			case "1":
 				ReservationUI.ShowMenu();
-				//System.out.println("not hooked up yet");
 				break;
 			case "2":
 				RidesUI.ShowMenu();
-				//System.out.println("not hooked up yet");
 				break;
 			case "3":
 				VehicleBrowserUI.ShowMenu();
-				//System.out.println("not hooked up yet");
 				break;
 			case "4":
 				UserUI.ShowMenu();
-				//System.out.println("not hooked up yet");
 				break;
 			case "5":
-				DriverUI.ShowMenu();
-				//System.out.println("not hooked up yet");
-				break;
+				if (isDriver) {
+					DriverUI.ShowMenu();
+					break;
+				}
 			case "6":
-				if(Quit())
+				if (Quit())
 					return;
 				else
 					break;
@@ -45,11 +55,10 @@ public class DatabaseUI {
 			}
 		}
 	}
-	private static boolean Quit() throws Exception{
-		// you sure? (y/n) y -> return;
-		// n -> showmenu.
+
+	private static boolean Quit() throws Exception {
 		System.out.println("Logout? (y/n)");
-		switch(Utils.getInput().toLowerCase()) {
+		switch (Utils.getInput().toLowerCase()) {
 		case "y":
 			System.out.println("Logging Out..");
 			return true;

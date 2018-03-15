@@ -1,5 +1,8 @@
 package UUber;
 
+import java.time.*;
+import java.time.format.*;
+
 public class ReservationUI {
 	public static void ShowMenu() throws Exception {
 		while (true) {
@@ -29,50 +32,50 @@ public class ReservationUI {
 	 * Browse or Search for an available car, add a reservation
 	 */
 	private static void ReserveCar() throws Exception {
-		String time;
+		String timeStr = null;
+		LocalDateTime time = null;
+		String carResult = null;
+
 		while (true) {
-			// ask user for reservation time slot, or cancel
-			System.out.println("*** Reserve a Car ***");
-			System.out.println("1. Select Time");
-			System.out.println("2. Cancel");
-			switch (Utils.getInput()) {
-			case "1":
-				System.out.println("Enter a Reservation Time (example = 3-20 05 07)");
-				time = Utils.getInput();
-				// sanitize before breaking
-				break;
-			case "2":
+			System.out.println("*** Select a Time ***");
+			System.out.println(" Format: YYYY-MM-DD HH ('q' to quit)");
+			timeStr = Utils.getInput();
+			if (timeStr == null || timeStr.equalsIgnoreCase("q"))
 				return;
-			default:
-				System.out.println("Invalid input.");
-				continue;
+
+			try {
+				time = LocalDateTime.parse(timeStr, Utils.formatINP);
+			} catch (Exception e) {
+				System.out.println("Failed to parse time input\n don't neglect leading zeros");
 			}
 
-			// get a car from Vehicle Browser (with valid time slots)
-			String vid = VehicleBrowserUI.ShowMenu(time);
+			if (time != null) {
+				carResult = VehicleBrowserUI.ShowMenu(time);
+				if (carResult == null) {
+					System.out.println("No valid Vehicle Chosen");
+					return;
+				}
 
-			if (vid == null) {
-				System.out.println("No vehicle available for given time.");
-				continue; // search failed to produce vehicle, start local menu over
-			}
+				if (AddReservation(carResult, time)) {
+					System.out.println("Reservation Successfully Added.");
+				} else {
+					System.out.println("Reservation Cancelled.");
+				}
 
-			// Attempt to Add reservation to database
-			if (AddReservation(vid, time)) {
-				System.out.println("Car sucessfully reserved!");
 				return;
-			} else
-				System.out.println("Unable to reserve vehicle for given time.");
+			}
 		}
 	}
+
 	/*
 	 * Generate, modify and display Reservation related queries
 	 */
 	private static void DisplayReservations() throws Exception {
 		String query = "";
-		
+
 		query += "SELECT vin, time ";
 		query += "FROM Reservation ";
-		query += "WHERE time > NOW() " ;
+		query += "WHERE time > NOW() ";
 		query += "AND login = '" + Utils.currentUser + "'";
 		query += ";";
 
@@ -84,11 +87,30 @@ public class ReservationUI {
 	}
 
 	/*
-	 * Attempt to Add a reservation to the database.  Return true if successful
-	 * */
-	private static boolean AddReservation(String vid, String time) {
-		// attempt to add reservation.  Throw exception if failed
+	 * Attempt to Add a reservation to the database. Return true if successful
+	 */
+	private static boolean AddReservation(String vin, LocalDateTime time) {
+		// attempt to add reservation. return false if fails.
+		System.out.println("Are you Sure you want to add this reservation (y/n)?");
+		System.out.println("VIN: " + vin + "\nTime: " + time.format(Utils.formatSQL).toString());
 
-		return false;
+		String result = null;
+		while (result == null) {
+			try {
+				result = Utils.getInput();
+			} catch (Exception e) {
+				System.out.print("Please enter y or n: ");
+			}
+		}
+
+		if (result.equalsIgnoreCase("n")) {
+			System.out.println("Cancelling Reservation...");
+			return false;
+		}
+		
+		/* Attempt to insert reservation. If Exception is caught, return false*/
+		System.out.println("Not yet implemented");
+
+		return true;
 	}
 }

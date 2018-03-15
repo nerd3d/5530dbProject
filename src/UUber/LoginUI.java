@@ -6,7 +6,7 @@ import java.sql.ResultSet;
 
 public class LoginUI {
 
-	public static void ShowMenu() throws Exception{
+	public static void ShowMenu() throws Exception {
 		while (true) {
 			// welcome and list options...wait for input
 			System.out.println("Welcome to UUber database!");
@@ -23,10 +23,7 @@ public class LoginUI {
 				CreateAccount();
 				break;
 			case "3":
-				if(Quit())
-					return;
-				else
-					break;
+				return;
 			default:
 				System.out.println("Invalid input.");
 				break;
@@ -34,7 +31,7 @@ public class LoginUI {
 		}
 	}
 
-	private static void Login() throws Exception{
+	private static void Login() throws Exception {
 		String u;
 		String p;
 		// asks for login info
@@ -42,19 +39,19 @@ public class LoginUI {
 		u = Utils.getInput();
 		System.out.println("Please enter password:");
 		p = Utils.getInput();
-		
-		//sanitizeInput(variable number of inputs)  <- to be implemented as own static class for all menus.
-		
+
+		// sanitizeInput(variable number of inputs) <- to be implemented as own static
+		// class for all menus.
+
 		// attempt login
-		String query = "SELECT login, name FROM User WHERE login = '"+u+"' AND password = '" + p + "';";
+		String query = "SELECT login, name FROM User WHERE login = '" + u + "' AND password = '" + p + "';";
 		ResultSet result = Utils.QueryHelper(query, StartPoint.connect.st);
-		//if(u.equals("master") && p.equals("1234")) //for offline testing
-		try{
+		// if(u.equals("master") && p.equals("1234")) //for offline testing
+		try {
 			result.next();
 			System.out.println("result: " + result.getString("login") + ", " + result.getString("name"));
 			// if login successful: call MainMenu.showmenu
-			if(result.getString("login").equals(u))
-			{
+			if (result.getString("login").equals(u)) {
 				System.out.println("Login successful. Welcome, " + result.getString("name"));
 				Utils.currentUser = u;
 				DatabaseUI.ShowMenu();
@@ -62,13 +59,12 @@ public class LoginUI {
 			// else: return to showMenu with failure message.
 			else
 				System.out.println("Invalid user name.");
-		}
-		catch(Exception e){
+		} catch (Exception e) {
 			System.out.println("Unreadable query result.");
 		}
 	}
 
-	private static void CreateAccount() throws Exception{
+	private static void CreateAccount() throws Exception {
 		// asks for login info and user details (try to validate user name as soon as
 		// entered)
 		String u;
@@ -79,6 +75,12 @@ public class LoginUI {
 		// asks for login info
 		System.out.println("Please enter desired Login Name:");
 		u = Utils.getInput();
+
+		/*
+		 * * * * * * * * * * * * * * * * * * * * * * Should check DB for existing user
+		 * here? * * * * * * * * * * * * * * * * * * * *
+		 */
+
 		System.out.println("Please enter desired password:");
 		p = Utils.getInput();
 		System.out.println("Please enter your name:");
@@ -87,50 +89,33 @@ public class LoginUI {
 		address = Utils.getInput();
 		System.out.println("Please enter phone # or skip:");
 		phone = Utils.getInput();
-		//sanitizeInput(variable number of inputs)  <- to be implemented as own static class for all menus.
+		// sanitizeInput(variable number of inputs) <- to be implemented as own static
+		// class for all menus.
 		// attempt to create new user
 		String query;
-		if(address == "" && phone == "")
-		{
-			 query = "INSERT INTO User VALUES ('"+u+"','"+p+"','"+name+"',NULL,NULL)" +";";
-		}
-		else if(address == "")
-			 query = "INSERT INTO User VALUES ('"+u+"','"+p+"','"+name+"',NULL,'"+phone+"')" +";";
-		else if(phone == "")
-			 query = "INSERT INTO User VALUES ('"+u+"','"+p+"','"+name+"','"+address+"',NULL)" +";";
+		if (address == "" && phone == "") {
+			query = "INSERT INTO User VALUES ('" + u + "','" + p + "','" + name + "',NULL,NULL)" + ";";
+		} else if (address == "")
+			query = "INSERT INTO User VALUES ('" + u + "','" + p + "','" + name + "',NULL,'" + phone + "')" + ";";
+		else if (phone == "")
+			query = "INSERT INTO User VALUES ('" + u + "','" + p + "','" + name + "','" + address + "',NULL)" + ";";
 		else
-			 query = "INSERT INTO User VALUES ('"+u+"','"+p+"','"+name+"','"+address+"','"+phone+"')" +";";
-		
-				int result = Utils.UpdateHelper(query, StartPoint.connect.st);
-				switch (result){
-				case 0:
-					System.out.println("Failed to create user.");
-					break;
-				case 1:
-					System.out.println("Account creation successful! Welcome, " + name);
-					Utils.currentUser = u;
-					DatabaseUI.ShowMenu();
-					break;
-				default:
-					System.out.println("Error occured.");
-					break;
-				}
-	}
+			query = "INSERT INTO User VALUES ('" + u + "','" + p + "','" + name + "','" + address + "','" + phone + "')"
+					+ ";";
 
-	private static boolean Quit() throws Exception{
-		// you sure? (y/n) y -> return;
-		// n -> showmenu.
-		System.out.println("Are you sure you want to quit? (y/n)");
-		switch(Utils.getInput().toLowerCase()) {
-		case "y":
-			System.out.println("Goodbye! Thank you for using UUber!");
-			Utils.currentUser = "";
-			return true;
-		case "n":
-			return false;
+		int result = Utils.UpdateHelper(query, StartPoint.connect.st);
+		switch (result) {
+		case 0:
+			System.out.println("Failed to create user.");
+			break;
+		case 1:
+			System.out.println("Account creation successful! Welcome, " + name);
+			Utils.currentUser = u;
+			DatabaseUI.ShowMenu();
+			break;
 		default:
-			System.out.println("Invalid input. Please type 'y' or 'n'.");
+			System.out.println("Error occured.");
+			break;
 		}
-		return false;
 	}
 }

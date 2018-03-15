@@ -1,5 +1,7 @@
 package UUber;
 
+import java.sql.*;
+
 public class UserUI {
 	public static void ShowMenu() throws Exception {
 		while (true) {
@@ -51,7 +53,11 @@ public class UserUI {
 			query += ";";
 		}
 
-		System.out.println(query); // this will need to query, then parse results for output 
+		ResultSet result = Utils.QueryHelper(query, StartPoint.connect.st);
+		while (result.next()){
+			System.out.println(result.getString(1));	
+		}
+		
 		System.out.println("<press any key to go back>");
 		Utils.getInput();
 	}
