@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.sql.*;
 import java.time.format.DateTimeFormatter;
+import java.util.regex.*;
 
 /*
  * The globally utilized class.
@@ -38,7 +39,15 @@ public class Utils {
 		return str.toUpperCase();
 	}
 
-	// sanitize function to be implemented..
+	public static String SanitizeInput(String value, String regx) throws Exception{
+		String result = value;
+		boolean inputOK = Pattern.matches( regx, value); 
+		
+		if(!inputOK)
+			throw new Exception("Invalid input character");
+		
+		return result;
+	}
 
 	/*Executes sql query
 	 * If null return value, query failed. Please see comments at bottom for handling return value.
@@ -55,15 +64,7 @@ public class Utils {
 	 		result = null;
 	 	}
 		return result;
-		//Handling return value:
-		/*
-		 * To print in columns:
-		 * while (result.next()) //next row
-			 {
-			        resultStringBuilder+=rs.getString("user")+"   "+rs.getString("psw")+"\n"; 
-			 }
-			 result.close();
-		 */
+		
 	}
 	/*Use for INSERT, UPDATE or DELETE
 	 * If -1 return value, error occurred. 0 means no rows changed. 1 means row changed.
@@ -81,14 +82,6 @@ public class Utils {
 	 		result = -1;
 	 	}
 		return result;
-		//Handling return value:
-		/*
-		 * To print in columns:
-		 * while (result.next()) //next row
-			 {
-			        resultStringBuilder+=rs.getString("user")+"   "+rs.getString("psw")+"\n"; 
-			 }
-			 result.close();
-		 */
+		
 	}
 }

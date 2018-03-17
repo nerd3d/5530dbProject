@@ -12,7 +12,6 @@ public class StartPoint {
 
 		try {
 			ConnectToDB();
-			//LoginUI.ShowMenu();
 		} catch (Exception e) {
 			
 		}
@@ -62,22 +61,5 @@ public class StartPoint {
 				}
 			}
 		}
-		/*String query = "SHOW TABLES";
-		ResultSet result;
-		String resultStr = "";
-		try{
-			result = connect.st.executeQuery(query);	
-        } catch(Exception e) {
-			System.err.println("Unable to execute query:"+query+"\n");
-	        System.err.println(e.getMessage());
-			throw(e);
-		}
-		
-		System.out.println("Available Tables="+query+"\n");
-		while (result.next()){
-			resultStr += result.getString("Tables_in_5530db21")+"\n";	
-		}
-
-		System.out.println("Tables_in_5530db21\n"+resultStr);*/
 	}
 }
