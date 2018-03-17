@@ -40,21 +40,23 @@ public class LoginUI {
 		System.out.println("Please enter Password:");
 		p = Utils.getInput();
 
-		try {
-		u = Utils.SanitizeInput(u, "[a-zA-Z]{1}[a-zA-Z0-9]{3,19}"); // username starts with a letter and is followed by 3 or more characters (number and letter only)
-		p = Utils.SanitizeInput(p, "[a-zA-Z0-9]{4,20}"); // password needs to be 4 or more characters long (number and letter only)
-		} catch (Exception e) {
-			System.out.println("Input error. \nUsername needs to start with a letter."); 
-			System.out.println("Username and Password lengths need to be from 4 - 20 characters long");
+		if(!Utils.SanitizeInput(u, "[a-zA-Z]{1}[a-zA-Z0-9]{3,19}")) {
+			System.out.println("Input error. \nUsername needs to start with a letter.");
+			System.out.println("Username length needs to be from 4 - 20 characters long");
 			return;
 		}
-
+		
+		if(!Utils.SanitizeInput(p, "[a-zA-Z0-9]{4,20}")) {
+			System.out.println("Input error. \nPassword length needs to be from 4 - 20 characters long");
+			return;
+		}
+		
 		// attempt login
 		String query = "SELECT login, name FROM User WHERE login = '" + u + "' AND password = '" + p + "';";
 		ResultSet result = Utils.QueryHelper(query, StartPoint.connect.st);
 
 		try {
-			if(result.next()) {
+			if (result.next()) {
 				// if login successful: call MainMenu.showmenu
 				System.out.println("Login successful. Welcome, " + result.getString("name"));
 				Utils.currentUser = u;
@@ -69,7 +71,8 @@ public class LoginUI {
 	}
 
 	private static void CreateAccount() throws Exception {
-		// asks for login info and user details (try to validate user name as soon as entered)
+		// asks for login info and user details (try to validate user name as soon as
+		// entered)
 		String u;
 		String p;
 		String name;
@@ -79,29 +82,43 @@ public class LoginUI {
 		System.out.println("Please enter desired Login Name:");
 		u = Utils.getInput();
 
-		try {
-			u = Utils.SanitizeInput(u, "[a-zA-Z]{1}[a-zA-Z0-9]{3,19}"); // username starts with a letter and is followed by 3 or more characters (number and letter only)
-			ResultSet result = Utils.QueryHelper("SELECT * FROM User WHERE login = '"+u+"'; ", Utils.stmt);
-			if(result.next()) {
+		if (Utils.SanitizeInput(u, "[a-zA-Z]{1}[a-zA-Z0-9]{3,19}")) {
+			ResultSet result = Utils.QueryHelper("SELECT * FROM User WHERE login = '" + u + "'; ", Utils.stmt);
+			if (result.next()) {
 				System.out.println("ERROR: Login Name already exists.\n");
 				return;
 			}
-			} catch (Exception e) {
-				System.out.println("Input error. \nUsername needs to start with a letter."); 
-				System.out.println("Username lengths need to be from 4 - 20 characters long");
-				return;
-			}
 
+		} else {
+			System.out.println("Input error. \nUsername needs to start with a letter.");
+			System.out.println("Username length needs to be from 4 - 20 characters long");
+			return;
+		}
+
+		// ask for password
 		System.out.println("Please enter desired password:");
 		p = Utils.getInput();
+		
+		if(!Utils.SanitizeInput(p, "[a-zA-Z0-9]{4,20}")) {
+			System.out.println("Input error. \nPassword length needs to be from 4 - 20 characters long");
+			return;
+		}
+
+		// ask for name
 		System.out.println("Please enter your name:");
 		name = Utils.getInput();
+		// need to sanitize...
+		
+		// ask for address
 		System.out.println("Please enter address or skip:");
 		address = Utils.getInput();
+		// need to sanitize...
+		
+		// ask for phone
 		System.out.println("Please enter phone # or skip:");
 		phone = Utils.getInput();
-		// sanitizeInput(variable number of inputs) <- to be implemented as own static
-		// class for all menus.
+		// need to sanitize...
+
 		// attempt to create new user
 		String query;
 		if (address == "" && phone == "") {

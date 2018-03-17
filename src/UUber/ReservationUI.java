@@ -47,6 +47,7 @@ public class ReservationUI {
 				time = LocalDateTime.parse(timeStr, Utils.formatINP);
 			} catch (Exception e) {
 				System.out.println("Failed to parse time input\n don't neglect leading zeros");
+				time = null;
 			}
 
 			if (time != null) {
@@ -90,7 +91,7 @@ public class ReservationUI {
 	 * Attempt to Add a reservation to the database. Return true if successful
 	 */
 	private static boolean AddReservation(String vin, LocalDateTime time) {
-		// attempt to add reservation. return false if fails.
+		// verify reservation Add
 		System.out.println("Are you Sure you want to add this reservation (y/n)?");
 		System.out.println("VIN: " + vin + "\nTime: " + time.format(Utils.formatSQL).toString());
 

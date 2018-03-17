@@ -39,14 +39,11 @@ public class Utils {
 		return str.toUpperCase();
 	}
 
-	public static String SanitizeInput(String value, String regx) throws Exception{
-		String result = value;
+	public static boolean SanitizeInput(String value, String regx) throws Exception{
+
 		boolean inputOK = Pattern.matches( regx, value); 
 		
-		if(!inputOK)
-			throw new Exception("Invalid input character");
-		
-		return result;
+		return inputOK;
 	}
 
 	/*Executes sql query

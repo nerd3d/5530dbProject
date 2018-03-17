@@ -5,6 +5,7 @@ import java.time.*;
 
 public class VehicleBrowserUI {
 
+	// returns the vin number of a selected vehicle. null if selection is canceled
 	public static String ShowMenu() throws Exception{
 		String query = "";
 		ResultSet result = null;
@@ -23,7 +24,7 @@ public class VehicleBrowserUI {
 			while(result.next()) {
 				System.out.print(row+"\t");
 				System.out.print(result.getString("vin")+"\t");
-				System.out.print(result.getString("name"));
+				System.out.print(result.getString("name") + "\n");
 				
 				row++;
 			}
@@ -34,7 +35,9 @@ public class VehicleBrowserUI {
 		}
 	}
 
+	// returns the vin number of a selected vehicle. null if selection is canceled
 	public static String ShowMenu(LocalDateTime time) throws Exception {
+		
 		while (true) {
 			// welcome and list options...wait for input
 			System.out.println("*** Vehicles available during "+ time.format(Utils.formatSQL).toString() +" ***");
