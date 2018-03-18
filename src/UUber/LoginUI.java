@@ -91,7 +91,7 @@ public class LoginUI {
 
 		} else {
 			System.out.println("Input error. \nUsername needs to start with a letter.");
-			System.out.println("Username length needs to be from 4 - 20 characters long");
+			System.out.println("Username length needs to be from 4 - 20 characters long, no spaces or special characters.");
 			return;
 		}
 
@@ -100,7 +100,7 @@ public class LoginUI {
 		p = Utils.getInput();
 		
 		if(!Utils.SanitizeInput(p, "[a-zA-Z0-9]{4,20}")) {
-			System.out.println("Input error. \nPassword length needs to be from 4 - 20 characters long");
+			System.out.println("Input error. \nPassword length needs to be from 4 - 20 characters long, no spaces, letters and numbers only.");
 			return;
 		}
 
@@ -108,16 +108,28 @@ public class LoginUI {
 		System.out.println("Please enter your name:");
 		name = Utils.getInput();
 		// need to sanitize...
-		
+		if(!Utils.SanitizeInput(name, "[a-zA-Z ]{2,30}")) {
+			System.out.println("Input error. \nName length needs to be from 2 - 30 characters long, letters only.");
+			return;
+		}
+	
 		// ask for address
 		System.out.println("Please enter address or skip:");
 		address = Utils.getInput();
 		// need to sanitize...
+		if(!Utils.SanitizeInput(address, "[a-zA-Z]{1}[a-zA-Z0-9 ]{3,256}")) {
+			System.out.println("Input error. \nAddress may not include special characters.");
+			return;
+		}
 		
 		// ask for phone
 		System.out.println("Please enter phone # or skip:");
 		phone = Utils.getInput();
 		// need to sanitize...
+		if(!Utils.SanitizeInput(phone, "[0-9]{10}")) {
+			System.out.println("Input error. \nPhone # needs to be 10 numbers, no spaces or dashes.");
+			return;
+		}
 
 		// attempt to create new user
 		String query;
