@@ -1,6 +1,9 @@
 package UUber;
 
 import java.sql.ResultSet;
+import java.time.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class DriverUI {
 	public static void ShowMenu() throws Exception {
@@ -14,8 +17,7 @@ public class DriverUI {
 			System.out.println("4. Back");
 			switch (Utils.getInput()) {
 			case "1":
-				// Availability();
-				System.out.println("not hooked up yet");
+				Availability();
 				break;
 			case "2":
 				if (ModifyCar()) {
@@ -34,15 +36,204 @@ public class DriverUI {
 			case "4":
 				return;
 			default:
-				System.out.println("Invalid input.");
+				System.out.println("Invalid menu selection");
 				break;
 			}
 		}
 	}
 
-	private static boolean ModifyCar() {
+	private static void Availability() throws Exception {
+		// Show user all current availability slots
+		String query = "SELECT model, year, day, time_from, time_to ";
+		query += "FROM Available A, Owns O, Car C ";
+		query += "WHERE A.vin = O.vin AND O.vin = C.vin ";
+		query += "AND O.login = '" + Utils.currentUser;
+		query += "' ORDER BY day, time_from;";
+		ResultSet avail = Utils.QueryHelper(query, Utils.stmt);
+
+		System.out.println("*** Current Availability ***");
+		while (avail.next()) {
+			String av = avail.getString("model") + "\t";
+			av += avail.getString("year") + "\t";
+			DayOfWeek dow = DayOfWeek.of(Integer.parseInt(avail.getString("day")));
+			av += dow.toString() + "\t";
+			av += avail.getString("time_from") + "\t";
+			av += avail.getString("time_to");
+			System.out.println(av);
+		}
+
+		while (true) {
+			// get input: Add availability, Modify availability, Remove Availability, Return
+			System.out.println("*** Please make a selection ***");
+			System.out.println("1. Add availability");
+			System.out.println("2. Modify availability");
+			System.out.println("3. Return");
+
+			switch (Utils.getInput()) {
+			case "1":
+				if (AddAvailability()) {
+					System.out.println("Availability Added");
+				} else {
+					System.out.println("Add aborted.");
+				}
+				break;
+			case "2":
+				if (ModAvailability()) {
+					System.out.println("Availability Modified");
+				} else {
+					System.out.println("Modification Aborted");
+				}
+				break;
+			case "3":
+				return;
+			default:
+				System.out.println("Invalid menu selection");
+				break;
+			}
+		}
+	}
+
+	private static boolean AddAvailability() throws Exception {
+		String dayStr;
+		List<String> vins, allVins;
+		DayOfWeek day;
+		int from, to, duration;
+
+		while (true) {
+			// get day for shift start
+			System.out.print("Please enter a Day (SU, MO, TU, WE, TH, FR, SA): ");
+			dayStr = Utils.getInputToUpper();
+			switch (dayStr) {
+			case "SU":
+				day = DayOfWeek.SUNDAY;
+				break;
+			case "MO":
+				day = DayOfWeek.MONDAY;
+				break;
+			case "TU":
+				day = DayOfWeek.TUESDAY;
+				break;
+			case "WE":
+				day = DayOfWeek.WEDNESDAY;
+				break;
+			case "TH":
+				day = DayOfWeek.THURSDAY;
+				break;
+			case "FR":
+				day = DayOfWeek.FRIDAY;
+				break;
+			case "SA":
+				day = DayOfWeek.SATURDAY;
+				break;
+			default:
+				System.out.println("Invalid Entry or Format");
+				return false;
+			}
+			// get time for shift start
+			System.out.print("Please enter the time you'd like to begin your shift (0 - 23):");
+			try {
+				from = Integer.parseInt(Utils.getInput());
+				if (from < 0 || from > 23)
+					throw new Exception("Invalid Entry or Format");
+			} catch (Exception e) {
+				System.out.println("Invalid Entry or Format");
+				return false;
+			}
+			// get duration of shift
+			System.out.print("Please enter the duration of your shift (max 12):");
+			try {
+				duration = Integer.parseInt(Utils.getInput());
+				if (duration < 1 || duration > 12)
+					throw new Exception("Invalid Entry or Format");
+			} catch (Exception e) {
+				System.out.println("Invalid Entry or Format");
+				return false;
+			}
+
+			// show owned cars
+			ResultSet ownedCars = Utils
+					.QueryHelper("SELECT Car.vin, model, year FROM Owns, Car WHERE Owns.vin = Car.vin AND login = '"
+							+ Utils.currentUser + "';", Utils.stmt);
+			int row = 1;
+			vins = new ArrayList<String>();
+			allVins = new ArrayList<String>();
+			while (ownedCars.next()) {
+				allVins.add(ownedCars.getString("vin"));
+				System.out.println(row + "\t" + ownedCars.getString("vin") + "\t" + ownedCars.getString("model") + "\t"
+						+ ownedCars.getString("year"));
+
+				row++;
+			}
+			// get which cars to include for shift
+			System.out.print("Select Car(s) available during this shift (separate with spaces OR 'a' for all):");
+			String cars = Utils.getInputToLower();
+			if (cars.equalsIgnoreCase("a")) {
+				vins = allVins;
+			} else {
+				// determine which cars to remove
+				String[] carList = cars.split("\b");
+
+				try {
+					for (String num : carList) {
+						System.out.print(num + " ");
+						int indx = Integer.parseInt(num) - 1;
+						vins.add(allVins.get(indx));
+					}
+				} catch (Exception e) {
+					System.out.println("Invalid Entry or Format");
+					return false;
+				}
+			}
+
+			/* 
+			 * validate there is NO conflicts before attempting to insert!
+			 */
+			
+			// attempt to insert shift for given cars
+			for (String vin : vins) {
+				to = from + duration;
+				if (to > 24) {
+					if (!InsertAvailability(vin, day, from, 24))
+						return false;
+					if (!InsertAvailability(vin, day.plus(1), 0, to - 24)) {
+						// clean up last insert
+						return false;
+					}
+				} else {
+					if (!InsertAvailability(vin, day, from, to))
+						return false;
+				}
+			}
+			return true;
+		}
+
+	}
+
+	private static boolean InsertAvailability(String vin, DayOfWeek day, int from, int to) throws Exception {
+		String insert = "INSERT INTO Available VALUES ('" + vin + "','" + day.getValue() + "','" + from + "','" + to
+				+ "');";
+		if (Utils.UpdateHelper(insert, Utils.stmt) < 0)
+			return false;
 
 		return true;
+	}
+
+	private static boolean ModAvailability() {
+		return false;
+	}
+
+	private static boolean ModifyCar() {
+		// Show user all owned cars
+
+		// get input for which car to edit
+
+		// get input for which field to edit / or delete car?
+
+		// get new value for field
+
+		// edit entry
+
+		return false;
 	}
 
 	private static boolean RegisterCar() throws Exception {
