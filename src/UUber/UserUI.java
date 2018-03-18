@@ -8,21 +8,21 @@ public class UserUI {
 			// welcome and list options...wait for input
 			System.out.println("*** User Relations ***");
 			System.out.println("Please make a selection:");
-			System.out.println("1. Browse Users");
-			System.out.println("2. Trusted Users");
-			System.out.println("3. Mistrusted Users");
-			System.out.println("4. Back");
+			//System.out.println("1. Browse Users");
+			System.out.println("1. Trusted Users");
+			System.out.println("2. Mistrusted Users");
+			System.out.println("3. Back");
 			switch (Utils.getInput()) {
+			//case "1":
+			//	UserBrowserUI.ShowMenu();
+			//	break;
 			case "1":
-				UserBrowserUI.ShowMenu();
-				break;
-			case "2":
 				DisplayTrusted(true);
 				break;
-			case "3":
+			case "2":
 				DisplayTrusted(false);
 				break;
-			case "4":
+			case "3":
 				return;
 			default:
 				System.out.println("Invalid input.");
@@ -57,8 +57,34 @@ public class UserUI {
 		while (result.next()){
 			System.out.println(result.getString(1));	
 		}
+		//options:
+		System.out.println("******");
+		if(trusted)
+			System.out.println("1. Add trusted User");
+		else
+			System.out.println("1. Add mistrusted User");
+		System.out.println("2. Back");
 		
-		System.out.println("<press any key to go back>");
-		Utils.getInput();
+		switch (Utils.getInput()) {
+		//case "1":
+		//	UserBrowserUI.ShowMenu();
+		//	break;
+		case "1":
+			if(trusted)
+				System.out.println("Please provide trusted username.");
+			else
+				System.out.println("Please provide mistrusted username.");
+			//check user exists, attempt to insert new trusted/mistrusted user to trust table
+			//if successful
+			System.out.println("Trust list updated.");
+			//else
+			System.out.println("User does not exist.");
+			return;
+		case "2":
+			return;
+		default:
+			System.out.println("Invalid input.");
+			return;
+		}
 	}
 }
