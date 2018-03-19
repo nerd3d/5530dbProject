@@ -26,7 +26,7 @@ public class UserUI {
 				return;
 			default:
 				System.out.println("Invalid input.");
-				break;
+				return;
 			}
 		}
 	}
@@ -79,10 +79,17 @@ public class UserUI {
 				System.out.println("Cannot put your own name on trust list.");
 				return;
 			}
+			// need to sanitize...
+			if(!Utils.SanitizeInput(usrName, "[a-zA-Z]{1}[a-zA-Z0-9]{3,19}")) {
+				System.out.println("Input error. \nUsername needs to start with a letter.");
+				System.out.println("Username length needs to be from 4 - 20 characters long, no spaces or special characters.");
+				return;
+			}
 			//attempt to insert new trusted/mistrusted user to trust table
 			//INSERT INTO table (id, name, age) VALUES(1, "A", 19) ON DUPLICATE KEY UPDATE name="A", age=19
-			if(-1 == Utils.UpdateHelper("INSERT INTO Trust (login, login2, trusted) VALUES('"+ Utils.currentUser + 
-					"', '"+ usrName + "'," + trusted +") ON DUPLICATE KEY UPDATE trusted = " + trusted +";", Utils.stmt)) 
+			int r = Utils.UpdateHelper("INSERT INTO Trust (login, login2, trusted) VALUES('"+ Utils.currentUser + 
+					"', '"+ usrName + "'," + trusted +") ON DUPLICATE KEY UPDATE trusted = " + trusted +";", Utils.stmt);
+			if(-1 == r) 
 			{
 				System.out.println("User does not exist or connection failed.");
 			}
