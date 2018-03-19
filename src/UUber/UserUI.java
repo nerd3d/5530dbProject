@@ -74,11 +74,22 @@ public class UserUI {
 				System.out.println("Please provide trusted username.");
 			else
 				System.out.println("Please provide mistrusted username.");
-			//check user exists, attempt to insert new trusted/mistrusted user to trust table
-			//if successful
-			System.out.println("Trust list updated.");
-			//else
-			System.out.println("User does not exist.");
+			String usrName = Utils.getInput();
+			if(usrName.equals(Utils.currentUser)) {
+				System.out.println("Cannot put your own name on trust list.");
+				return;
+			}
+			//attempt to insert new trusted/mistrusted user to trust table
+			//INSERT INTO table (id, name, age) VALUES(1, "A", 19) ON DUPLICATE KEY UPDATE name="A", age=19
+			if(-1 == Utils.UpdateHelper("INSERT INTO Trust (login, login2, trusted) VALUES('"+ Utils.currentUser + 
+					"', '"+ usrName + "'," + trusted +") ON DUPLICATE KEY UPDATE trusted = " + trusted +";", Utils.stmt)) 
+			{
+				System.out.println("User does not exist or connection failed.");
+			}
+			else
+			{
+				System.out.println("Trust list updated.");
+			}
 			return;
 		case "2":
 			return;

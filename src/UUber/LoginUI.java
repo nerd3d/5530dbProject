@@ -133,11 +133,11 @@ public class LoginUI {
 
 		// attempt to create new user
 		String query;
-		if (address == "" && phone == "") {
+		if (address.equals("") && phone.equals("")) {
 			query = "INSERT INTO User VALUES ('" + u + "','" + p + "','" + name + "',NULL,NULL)" + ";";
-		} else if (address == "")
+		} else if (address.equals(""))
 			query = "INSERT INTO User VALUES ('" + u + "','" + p + "','" + name + "',NULL,'" + phone + "')" + ";";
-		else if (phone == "")
+		else if (phone.equals(""))
 			query = "INSERT INTO User VALUES ('" + u + "','" + p + "','" + name + "','" + address + "',NULL)" + ";";
 		else
 			query = "INSERT INTO User VALUES ('" + u + "','" + p + "','" + name + "','" + address + "','" + phone + "')"
