@@ -44,29 +44,33 @@ public class DriverUI {
 
 	private static void Availability() throws Exception {
 		// Show user all current availability slots
-		String query = "SELECT model, year, day, time_from, time_to ";
+		String query = "SELECT A.vin, model, year, day, time_from, time_to ";
 		query += "FROM Available A, Owns O, Car C ";
 		query += "WHERE A.vin = O.vin AND O.vin = C.vin ";
 		query += "AND O.login = '" + Utils.currentUser;
 		query += "' ORDER BY day, time_from;";
-		ResultSet avail = Utils.QueryHelper(query, Utils.stmt);
-
-		System.out.println("*** Current Availability ***");
-		while (avail.next()) {
-			String av = avail.getString("model") + "\t";
-			av += avail.getString("year") + "\t";
-			DayOfWeek dow = DayOfWeek.of(Integer.parseInt(avail.getString("day")));
-			av += dow.toString() + "\t";
-			av += avail.getString("time_from") + "\t";
-			av += avail.getString("time_to");
-			System.out.println(av);
-		}
+		
 
 		while (true) {
+			ResultSet avail = Utils.QueryHelper(query, Utils.stmt);
+			System.out.println("*** Current Availability ***");
+			int num = 1;
+			while (avail.next()) {
+				String av = num + "\t";
+				av += avail.getString("model") + "\t";
+				av += avail.getString("year") + "\t";
+				DayOfWeek dow = DayOfWeek.of(Integer.parseInt(avail.getString("day")));
+				av += dow.toString() + "\t";
+				av += avail.getString("time_from") + "\t";
+				av += avail.getString("time_to");
+				System.out.println(av);
+				num++;
+			}
+
 			// get input: Add availability, Modify availability, Remove Availability, Return
 			System.out.println("*** Please make a selection ***");
 			System.out.println("1. Add availability");
-			System.out.println("2. Modify availability");
+			System.out.println("2. Remove availability");
 			System.out.println("3. Return");
 
 			switch (Utils.getInput()) {
@@ -78,11 +82,27 @@ public class DriverUI {
 				}
 				break;
 			case "2":
-				if (ModAvailability()) {
-					System.out.println("Availability Modified");
-				} else {
-					System.out.println("Modification Aborted");
+				// Get shift to delete
+				System.out.print("Enter shift to remove: ");
+				int deleteMe;
+				try {
+					deleteMe = Integer.parseInt(Utils.getInput());
+				} catch (Exception e) {
+					System.out.println("ERROR: Enter a number.");
+					break;
 				}
+				// Get vin, day, time_from and time_to to be deleted
+				avail.beforeFirst();
+				avail.relative(deleteMe);
+
+				// delete the entry from Available
+				String delEntry = "DELETE FROM Available ";
+				delEntry += "WHERE vin = '" + avail.getString("A.vin") + "' ";
+				delEntry += "AND day = '" + avail.getString("day") + "' ";
+				delEntry += "AND time_from = '" + avail.getString("time_from") + "' ";
+				delEntry += "AND time_to = '" + avail.getString("time_to") + "'; ";
+				Utils.UpdateHelper(delEntry, Utils.stmt);
+
 				break;
 			case "3":
 				return;
@@ -185,10 +205,10 @@ public class DriverUI {
 				}
 			}
 
-			/* 
+			/*
 			 * validate there is NO conflicts before attempting to insert!
 			 */
-			
+
 			// attempt to insert shift for given cars
 			for (String vin : vins) {
 				to = from + duration;
@@ -216,10 +236,6 @@ public class DriverUI {
 			return false;
 
 		return true;
-	}
-
-	private static boolean ModAvailability() {
-		return false;
 	}
 
 	private static boolean ModifyCar() {
