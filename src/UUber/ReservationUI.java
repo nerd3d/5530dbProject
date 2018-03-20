@@ -51,7 +51,7 @@ public class ReservationUI {
 			}
 
 			if (time != null) {
-				carResult = VehicleBrowserUI.ShowMenu(time);
+				carResult = VehicleBrowserUI.ShowMenu("Reservation", time);
 				if (carResult == null) {
 					System.out.println("No valid Vehicle Chosen");
 					return;

@@ -1,6 +1,7 @@
 package UUber;
 
 import java.sql.ResultSet;
+import java.time.LocalDateTime;
 
 public class DatabaseUI {
 	public static boolean isDriver = false;
@@ -34,7 +35,7 @@ public class DatabaseUI {
 				RidesUI.ShowMenu();
 				break;
 			case "3":
-				VehicleBrowserUI.ShowMenu("MainMenu");
+				VehicleBrowserUI.ShowMenu("MainMenu", LocalDateTime.parse(LocalDateTime.now().toString(), Utils.formatINP));
 				break;
 			case "4":
 				UserUI.ShowMenu();
