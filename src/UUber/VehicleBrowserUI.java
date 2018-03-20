@@ -6,10 +6,24 @@ import java.time.*;
 public class VehicleBrowserUI {
 
 	// returns the vin number of a selected vehicle. null if selection is canceled
-	public static String ShowMenu() throws Exception{
+	public static String ShowMenu(String caller) throws Exception{
 		String query = "";
 		ResultSet result = null;
-		
+		switch(caller) {
+		case "MainMenu":
+			//asks for filters: category, address (state or city), model keywords
+			//specify sorting: (average feedback score, average trusted feedback score)
+			break;
+		case "Ride":
+			//^
+			//additional filter of only cars available right now
+			//show ride menu
+			break;
+		case "Reservation":
+			//^
+			//show reserve menu
+			break;
+		}
 		while (true) {
 			// welcome and list options...wait for input
 			System.out.println("*** Vehicles ***");

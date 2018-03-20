@@ -34,7 +34,7 @@ public class DatabaseUI {
 				RidesUI.ShowMenu();
 				break;
 			case "3":
-				VehicleBrowserUI.ShowMenu();
+				VehicleBrowserUI.ShowMenu("MainMenu");
 				break;
 			case "4":
 				UserUI.ShowMenu();
