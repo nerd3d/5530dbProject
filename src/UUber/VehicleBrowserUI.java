@@ -5,19 +5,23 @@ import java.time.*;
 
 //asks for filters
 //asks for sorting
+//adjust query depending on caller (reserve, rides, mainmenu)
 //Displays list of cars
-//if in main menu
+
 public class VehicleBrowserUI {
 	
 	
 	
 	// returns the vin number of a selected vehicle. null if selection is canceled
-	public static String ShowMenu(String caller) throws Exception{
+	public static String ShowMenu(String caller, LocalDateTime time) throws Exception{
 		String query = "";
 		ResultSet result = null;
 		
-		//asks for filters: category
+		/////////////////////////////////////////////////////////////////////////
+		//asks for filters
+		/////////////////////////////////////////////////////////////////////////
 		System.out.println("Choose filters by typing one of the offered numbers:");
+		//ask for category
 		System.out.println("Vehicle Category: (1) No filter (2) SUV (3) Truck (4) Sedan (5) Economy (6) Comfort (7) Luxury");
 		int cat = Integer.parseInt(Utils.getInput());
 		//if invalid input
@@ -63,24 +67,39 @@ public class VehicleBrowserUI {
 			//add to query: where model like keyword
 		}
 		
+		/////////////////////////////////////////////////////////////////////////
+		//asks for sorting
+		/////////////////////////////////////////////////////////////////////////
 		//specify sorting: (average feedback score, average trusted feedback score)
+		System.out.println("Sort by average feedback score overall (1) or according to trusted users (2) or no sort (3)");
+		int sort = Integer.parseInt(Utils.getInput());
+		//if invalid input
+		if(cat < 1 || cat > 3) {
+			System.out.println("Invalid input.");
+			return null;
+		}
+		//update query based off sort
 		
+		
+		/////////////////////////////////////////////////////////////////////////
+		//adjust query based on caller
+		/////////////////////////////////////////////////////////////////////////
 		switch(caller) {
 		case "Ride":
 			//additional filter of only cars available right now
-			//show ride menu
 			break;
 		case "Reservation":
-			//show reserve menu
+			//?? any changes??
 			break;
 		case "MainMenu":
+			//no changes
 			break;
 		default:
 			return null;
 		}
 		while (true) {
 			// welcome and list options...wait for input
-			System.out.println("*** Vehicles ***");
+			//System.out.println("*** Vehicles ***");
 			System.out.println("Num\tVIN\tDriver");
 			query += "SELECT vin, name ";
 			query += "FROM Owns, User ";
@@ -103,7 +122,7 @@ public class VehicleBrowserUI {
 		}
 	}
 
-	// returns the vin number of a selected vehicle. null if selection is canceled
+	/*// returns the vin number of a selected vehicle. null if selection is canceled
 	public static String ShowMenu(LocalDateTime time) throws Exception {
 		
 		while (true) {
@@ -116,6 +135,6 @@ public class VehicleBrowserUI {
 			Utils.getInput();
 			return null; // Needs to return the Car vin
 		}
-	}
+	}*/
 
 }
