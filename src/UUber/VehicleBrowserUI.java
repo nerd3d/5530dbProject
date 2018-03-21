@@ -18,6 +18,7 @@ public class VehicleBrowserUI {
 	public static String ShowMenu(String caller, LocalDateTime time) throws Exception{
 		String query = "";
 		String filter = "";
+		String sortStr = "";
 		ResultSet result = null;
 		
 		/////////////////////////////////////////////////////////////////////////
@@ -45,6 +46,7 @@ public class VehicleBrowserUI {
 				return null;
 			}
 			//add to query: where state = state
+			filter += " AND User.state = '" + state + "'";
 		}
 		//ask for address (city)
 		System.out.println("Please provide desired city (example: Atlanta) or skip");
@@ -57,6 +59,7 @@ public class VehicleBrowserUI {
 				return null;
 			}
 			//add to query: where city = city
+			filter += " AND User.city = '" + city + "'";
 		}
 		//ask for model keyword
 		System.out.println("Please provide model keyword (example: BMW) or skip");
@@ -69,13 +72,14 @@ public class VehicleBrowserUI {
 				return null;
 			}
 			//add to query: where model like keyword
+			filter += " AND C.model like '%" + keyword + "%'";
 		}
 		
 		/////////////////////////////////////////////////////////////////////////
 		//asks for sorting
 		/////////////////////////////////////////////////////////////////////////
 		//specify sorting: (average feedback score, average trusted feedback score)
-		System.out.println("Sort by average feedback score overall (1) or according to trusted users (2) or no sort (3)");
+		System.out.println("Sort by average feedback score (1) or according to trusted users (2) or no sort (3)");
 		int sort = Integer.parseInt(Utils.getInput());
 		//if invalid input
 		if(cat < 1 || cat > 3) {
@@ -83,8 +87,12 @@ public class VehicleBrowserUI {
 			return null;
 		}
 		//update query based off sort
-		
-		
+		if(cat != 3)
+			if(cat == 1)
+				//FEEDBACK PROBABLY NEEDS TO BE ON IT's OWN QUERY SO WE DON'T RETURN DUPLICATES
+				sortStr = " ORDER BY avg(F.rating)";//avg feedback score
+			else
+				sortStr = ""; // avg trusted feedback score
 		/////////////////////////////////////////////////////////////////////////
 		//adjust query based on caller
 		/////////////////////////////////////////////////////////////////////////
@@ -123,8 +131,8 @@ public class VehicleBrowserUI {
 			//System.out.println("*** Vehicles ***");
 			System.out.println("Num\tVIN\tDriver");
 			query += "SELECT vin, name ";
-			query += "FROM Owns, User, Car C";
-			query += "WHERE Owns.login = User.login  AND Owns.vin = C.vin";
+			query += "FROM Owns, User, Car C";//, Feedback F
+			query += "WHERE Owns.login = User.login  AND Owns.vin = C.vin";// AND F.vin = C.vin
 			query += "ORDER BY name ";
 			
 			result = Utils.QueryHelper(query, Utils.stmt);
