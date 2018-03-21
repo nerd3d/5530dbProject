@@ -35,7 +35,7 @@ public class DatabaseUI {
 				RidesUI.ShowMenu();
 				break;
 			case "3":
-				VehicleBrowserUI.ShowMenu("MainMenu", LocalDateTime.parse(LocalDateTime.now().toString(), Utils.formatINP));
+				String vin = VehicleBrowserUI.ShowMenu("MainMenu", LocalDateTime.parse(LocalDateTime.now().format(Utils.formatINP).toString(), Utils.formatINP));
 				break;
 			case "4":
 				UserUI.ShowMenu();

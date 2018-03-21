@@ -63,13 +63,15 @@ static String[] states = {"California,", "Alabama,", "Arkansas,", "Arizona,", "A
 				// if login successful: call MainMenu.showmenu
 				System.out.println("Login successful. Welcome, " + result.getString("name"));
 				Utils.currentUser = u;
-				DatabaseUI.ShowMenu();
 			}
 			// else: return to showMenu with failure message.
 			else
 				System.out.println("Invalid user name.");
 		} catch (Exception e) {
 			System.out.println("Unreadable query result.");
+		}
+		if(Utils.currentUser.equals(u)) {
+			DatabaseUI.ShowMenu();
 		}
 	}
 

@@ -17,6 +17,7 @@ public class VehicleBrowserUI {
 	// returns the vin number of a selected vehicle. null if selection is canceled
 	public static String ShowMenu(String caller, LocalDateTime time) throws Exception{
 		String query = "";
+		String filter = "";
 		ResultSet result = null;
 		
 		/////////////////////////////////////////////////////////////////////////
@@ -31,6 +32,7 @@ public class VehicleBrowserUI {
 			System.out.println("Invalid input.");
 			return null;
 		}
+		filter = catStringToQuery(cat);
 
 		//ask for address (state)
 		System.out.println("Please provide desired state (example: Texas) or skip");
@@ -121,8 +123,8 @@ public class VehicleBrowserUI {
 			//System.out.println("*** Vehicles ***");
 			System.out.println("Num\tVIN\tDriver");
 			query += "SELECT vin, name ";
-			query += "FROM Owns, User ";
-			query += "WHERE Owns.login = User.login ";
+			query += "FROM Owns, User, Car C";
+			query += "WHERE Owns.login = User.login  AND Owns.vin = C.vin";
 			query += "ORDER BY name ";
 			
 			result = Utils.QueryHelper(query, Utils.stmt);
@@ -141,6 +143,7 @@ public class VehicleBrowserUI {
 				System.out.println("Invalid selection.");
 				return null;
 			}
+			System.out.println("Got vin: "+ vinList.get(selected-1));
 			return vinList.get(selected-1);
 			//System.out.println("\n<press any key to go back>"); // replace with selection options
 			//Utils.getInput();
@@ -148,6 +151,32 @@ public class VehicleBrowserUI {
 		}
 	}
 
+	
+	private static String catStringToQuery(int i){
+		String r = "";
+		//(1) No filter (2) SUV (3) Truck (4) Sedan (5) Economy (6) Comfort (7) Luxury
+		switch(i) {
+		case 2:
+			r = "AND C.category = 'suv'";
+			break;
+		case 3:
+			r = "AND C.category = 'truck'";
+			break;
+		case 4:
+			r = "AND C.category = 'sedan'";
+			break;
+		case 5:
+			r = "AND C.category = 'economy'";
+			break;
+		case 6:
+			r = "AND C.category = 'comfort'";
+			break;
+		case 7:
+			r = "AND C.category = 'luxury'";
+			break;
+		}
+		return r;
+	}
 	/*// returns the vin number of a selected vehicle. null if selection is canceled
 	public static String ShowMenu(LocalDateTime time) throws Exception {
 		
