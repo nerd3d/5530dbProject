@@ -83,20 +83,20 @@ public class VehicleBrowserUI {
 		System.out.println("Sort by average feedback score (1) or according to trusted users (2) or no sort (3)");
 		int sort = Integer.parseInt(Utils.getInput());
 		//if invalid input
-		if(cat < 1 || cat > 3) {
+		if(sort < 1 || sort > 3) {
 			System.out.println("Invalid input.");
 			return null;
 		}
 		//update query based off sort
-		if(cat != 3)
+		if(sort != 3)
 		{
 			fromOrder = "";//create the new table that the main query will join with in order to ORDER BY avg rating
-			if(cat == 1)
+			if(sort == 1)
 				//FEEDBACK PROBABLY NEEDS TO BE ON IT's OWN QUERY SO WE DON'T RETURN DUPLICATES
-				
-				sortStr = " ORDER BY avg(F.rating) desc";//avg feedback score
+				// ORDER BY avgRating desc 
+				sortStr = "(SELECT vin, AVG(rating) avgRating FROM Feedback GROUP BY vin) F";//" ORDER BY avg(F.rating) desc";//avg feedback score
 			else
-				sortStr = ""; // avg trusted feedback score
+				sortStr = "(SELECT F1.vin, AVG(F1.rating) avgRating FROM Feedback F1,Trust T1 WHERE T1.login = '"+Utils.currentUser+"' AND F1.login = T1.login2 GROUP BY F1.vin) F"; // avg trusted feedback score
 		}
 		/////////////////////////////////////////////////////////////////////////
 		//adjust query based on caller
@@ -138,10 +138,20 @@ public class VehicleBrowserUI {
 			// welcome and list options...wait for input
 			//System.out.println("*** Vehicles ***");
 			System.out.println("Num\tVIN\tDriver");
-			query += "SELECT vin, name ";
+			query += "SELECT Owns.vin, User.name ";
 			query += "FROM Owns, User, Car C ";//, Feedback F
-			query += "WHERE Owns.login = User.login  AND Owns.vin = C.vin ";// AND F.vin = C.vin
-			query += "ORDER BY name ";
+			if(!fromOrder.equals(""))
+			{
+				query += ", " + fromOrder;
+			}
+			query += "WHERE Owns.login = User.login  AND Owns.vin = C.vin " + filter;
+			if(!fromOrder.equals(""))
+				query += " AND F.vin = C.vin";
+			if(sort != 3) {//if special order by...
+				query += sortStr ;
+			}
+			else
+				query += " ORDER BY name ";
 			
 			result = Utils.QueryHelper(query, Utils.stmt);
 			int row = 1;
