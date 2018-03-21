@@ -49,7 +49,6 @@ public class DriverUI {
 		query += "WHERE A.vin = O.vin AND O.vin = C.vin ";
 		query += "AND O.login = '" + Utils.currentUser;
 		query += "' ORDER BY day, time_from;";
-		
 
 		while (true) {
 			ResultSet avail = Utils.QueryHelper(query, Utils.stmt);
@@ -238,18 +237,148 @@ public class DriverUI {
 		return true;
 	}
 
-	private static boolean ModifyCar() {
+	private static boolean ModifyCar() throws Exception {
 		// Show user all owned cars
+		String query = "SELECT O.vin, make, model, year, category ";
+		query += "FROM Owns O, Car C ";
+		query += "WHERE O.vin = C.vin ";
+		query += "AND login = '" + Utils.currentUser + "';";
+		ResultSet owned = Utils.QueryHelper(query, Utils.stmt);
+
+		System.out.println("VIN\tMake\tModel\tYear\tCategory");
+		int num = 1;
+		while (owned.next()) {
+			System.out.print(num + "\t");
+			System.out.print(owned.getString("O.vin") + "\t");
+			System.out.print(owned.getString("make") + "\t");
+			System.out.print(owned.getString("model") + "\t");
+			System.out.print(owned.getString("year") + "\t");
+			System.out.print(owned.getString("category") + "\n");
+			num++;
+		}
 
 		// get input for which car to edit
+		System.out.print("Select a Vehicle to Modify: ");
+		num = Integer.parseInt(Utils.getInput());
+		owned.beforeFirst();
+		owned.relative(num);
 
 		// get input for which field to edit / or delete car?
+		System.out.print("Select a field to Edit: ");
+		String field = Utils.getInputToLower();
+		String changeTo;
+		String swapEm = "";
 
-		// get new value for field
+		switch (field) {
+		case "vin":
+			// get new value for field
+			System.out.print("Enter the new VIN: ");
+			changeTo = Utils.getInput();
+
+			if (Utils.SanitizeInput(changeTo, "[a-zA-Z0-9]{17}")) {
+				ResultSet result = Utils.QueryHelper("SELECT * FROM Car WHERE vin = '" + changeTo + "'; ", Utils.stmt);
+				if (result.next()) {
+					System.out.println("ERROR: Vehicle already exists in records.\n");
+					return false;
+				}
+			} else {
+				System.out.println("Input error. \nVIN needs to be exactly 17 characters long.");
+				System.out.println("Only letters and numbers are vild characters");
+				return false;
+			}
+
+			// update to new value
+			swapEm = "UPDATE Car SET vin = '" + changeTo + "' ";
+
+			break;
+		case "make":
+			// get new value for field
+			System.out.print("Enter Make of Car: ");
+			changeTo = Utils.getInput();
+
+			if (!Utils.SanitizeInput(changeTo, "[a-zA-Z ]{3,10}")) {
+				System.out.println("Input error. \nMake length needs to be from 3 - 10 characters long");
+				return false;
+			}
+
+			// update to new value
+			swapEm = "UPDATE Car SET make = '" + changeTo + "' ";
+
+			break;
+		case "model":
+			// get new value for field
+			System.out.print("Enter Model of Car: ");
+			changeTo = Utils.getInput();
+
+			if (!Utils.SanitizeInput(changeTo, "[a-zA-Z ]{3,10}")) {
+				System.out.println("Input error. \nMake length needs to be from 3 - 10 characters long");
+				return false;
+			}
+
+			// update to new value
+			swapEm = "UPDATE Car SET model = '" + changeTo + "' ";
+
+			break;
+		case "year":
+			// get new value for field
+			System.out.print("Enter Year of Car: ");
+			changeTo = Utils.getInput();
+
+			if (!Utils.SanitizeInput(changeTo, "[0-9]{4}")) {
+				System.out.println("Input error. \nYear needs to be 4 digits");
+				return false;
+			}
+
+			// update to new value
+			swapEm = "UPDATE Car SET year = '" + changeTo + "' ";
+
+			break;
+		case "category":
+			// select a category
+			changeTo = GetCategory();
+
+			// update to new value
+			swapEm = "UPDATE Car SET category = '" + changeTo + "' ";
+
+			break;
+		default:
+			System.out.println("ERROR: No such Field.");
+			return false;
+		}
 
 		// edit entry
+		swapEm += "WHERE vin = '" + owned.getString("O.vin") + "';";
+		if(Utils.UpdateHelper(swapEm, Utils.stmt) >= 0)
+			return true;
 
 		return false;
+	}
+
+	private static String GetCategory() throws Exception {
+		String category = null;
+		// select a category
+		ResultSet cats = Utils.QueryHelper("SELECT * FROM Category", Utils.stmt);
+		boolean valid = false;
+
+		while (!valid) {
+			System.out.println("Please select an appropriate category for your car:");
+
+			while (cats.next()) {
+				System.out.println(cats.getString("category"));
+			}
+
+			String select = Utils.getInputToLower();
+			if (Utils.SanitizeInput(select, "[a-zA-Z0-9]{1,20}")) {
+				while (cats.previous()) {
+					if (cats.getString("category").equalsIgnoreCase(select)) {
+						valid = true;
+						category = select;
+					}
+				}
+			}
+		}
+		return category;
+
 	}
 
 	private static boolean RegisterCar() throws Exception {
@@ -299,26 +428,7 @@ public class DriverUI {
 		}
 
 		// select a category
-		ResultSet cats = Utils.QueryHelper("SELECT * FROM Category", Utils.stmt);
-		boolean valid = false;
-
-		while (!valid) {
-			System.out.println("Please select an appropriate category for your car:");
-
-			while (cats.next()) {
-				System.out.println(cats.getString("category"));
-			}
-
-			String select = Utils.getInputToLower();
-			if (Utils.SanitizeInput(select, "[a-zA-Z0-9]{1,20}")) {
-				while (cats.previous()) {
-					if (cats.getString("category").equalsIgnoreCase(select)) {
-						valid = true;
-						category = select;
-					}
-				}
-			}
-		}
+		category = GetCategory();
 
 		// All info gathered. Display and confirm before submitting
 		while (true) {
