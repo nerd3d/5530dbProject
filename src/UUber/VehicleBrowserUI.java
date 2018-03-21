@@ -18,6 +18,7 @@ public class VehicleBrowserUI {
 	public static String ShowMenu(String caller, LocalDateTime time) throws Exception{
 		String query = "";
 		String filter = "";
+		String fromOrder = "";
 		String sortStr = "";
 		ResultSet result = null;
 		
@@ -88,11 +89,15 @@ public class VehicleBrowserUI {
 		}
 		//update query based off sort
 		if(cat != 3)
+		{
+			fromOrder = "";//create the new table that the main query will join with in order to ORDER BY avg rating
 			if(cat == 1)
 				//FEEDBACK PROBABLY NEEDS TO BE ON IT's OWN QUERY SO WE DON'T RETURN DUPLICATES
-				sortStr = " ORDER BY avg(F.rating)";//avg feedback score
+				
+				sortStr = " ORDER BY avg(F.rating) desc";//avg feedback score
 			else
 				sortStr = ""; // avg trusted feedback score
+		}
 		/////////////////////////////////////////////////////////////////////////
 		//adjust query based on caller
 		/////////////////////////////////////////////////////////////////////////
@@ -103,6 +108,7 @@ public class VehicleBrowserUI {
 			//record ride >> returns vin
 			//give feedback
 			//view feedback
+			//favorite
 			//back to vehicle browser
 			//exit vehicle browser
 			break;
@@ -112,6 +118,7 @@ public class VehicleBrowserUI {
 			//set reservation >> returns vin
 			//give feedback
 			//view feedback
+			//favorite
 			//back to vehicle browser
 			//exit vehicle browser
 			break;
@@ -119,6 +126,7 @@ public class VehicleBrowserUI {
 			//selecting a car will give menu of
 			//give feedback
 			//view feedback
+			//favorite
 			//back to vehicle browser
 			//exit vehicle browser
 			break;
@@ -131,8 +139,8 @@ public class VehicleBrowserUI {
 			//System.out.println("*** Vehicles ***");
 			System.out.println("Num\tVIN\tDriver");
 			query += "SELECT vin, name ";
-			query += "FROM Owns, User, Car C";//, Feedback F
-			query += "WHERE Owns.login = User.login  AND Owns.vin = C.vin";// AND F.vin = C.vin
+			query += "FROM Owns, User, Car C ";//, Feedback F
+			query += "WHERE Owns.login = User.login  AND Owns.vin = C.vin ";// AND F.vin = C.vin
 			query += "ORDER BY name ";
 			
 			result = Utils.QueryHelper(query, Utils.stmt);
