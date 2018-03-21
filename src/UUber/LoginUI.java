@@ -3,8 +3,11 @@ package UUber;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.sql.ResultSet;
+import java.util.Arrays;
 
 public class LoginUI {
+	//grabbed an array of states of the web to restrict input to real states.
+static String[] states = {"California,", "Alabama,", "Arkansas,", "Arizona,", "Alaska,", "Colorado,", "Connecticut,", "Delaware,", "Florida,", "Georgia,", "Hawaii,", "Idaho,", "Illinois,", "Indiana,", "Iowa,", "Kansas,", "Kentucky,", "Louisiana,", "Maine,", "Maryland,", "Massachusetts,", "Michigan,", "Minnesota,", "Mississippi,", "Missouri,", "Montana,", "Nebraska,", "Nevada,", "New Hampshire,", "New Jersey,", "New Mexico,", "New York,", "North Carolina,", "North Dakota,", "Ohio,", "Oklahoma,", "Oregon,", "Pennsylvania,", "Rhode Island,", "South Carolina,", "South Dakota,", "Tennessee,", "Texas,", "Utah,", "Vermont,", "Virginia,", "Washington,", "West Virginia,", "Wisconsin,", "Wyoming" };
 
 	public static void ShowMenu() throws Exception {
 		while (true) {
@@ -76,7 +79,8 @@ public class LoginUI {
 		String u;
 		String p;
 		String name;
-		String address;
+		String state;
+		String city;
 		String phone;
 		// asks for login info
 		System.out.println("Please enter desired Login Name:");
@@ -114,34 +118,56 @@ public class LoginUI {
 		}
 	
 		// ask for address
-		System.out.println("Please enter address or skip:");
-		address = Utils.getInput();
+		System.out.println("Please enter state:");
+		state = Utils.getInput();
 		// need to sanitize...
-		if(!Utils.SanitizeInput(address, "[a-zA-Z]{1}[a-zA-Z0-9 ]{3,256}")) {
-			System.out.println("Input error. \nAddress may not include special characters.");
+		if(state != null && !state.equals("") && Arrays.asList(LoginUI.states).contains(state))
+		{
+			if(!Utils.SanitizeInput(state, "[a-zA-Z ]{4,13}")) {
+				System.out.println("State needs to be from 4 - 13 characters long, Letters and spaces only.");
+				return;
+			}
+		}
+		else
+		{
+			System.out.println("invalid input");
 			return;
 		}
+		// ask for address
+		System.out.println("Please enter city:");
+		city = Utils.getInput();
+		// need to sanitize...
+		if(city != null && !city.equals(""))
+		{
+			if(!Utils.SanitizeInput(city, "[a-zA-Z ]{1,30}")) {
+				System.out.println("City needs to be from 1 - 30 characters long, Letters and spaces only.");
+				return;
+			}
+		}
+		else
+		{
+			System.out.println("invalid input");
+			return;
+		}
+		
 		
 		// ask for phone
 		System.out.println("Please enter phone # or skip:");
 		phone = Utils.getInput();
 		// need to sanitize...
-		if(!Utils.SanitizeInput(phone, "[0-9]{10}")) {
-			System.out.println("Input error. \nPhone # needs to be 10 numbers, no spaces or dashes.");
-			return;
+		if(phone != null && !phone.equals("")) {
+			if(!Utils.SanitizeInput(phone, "[0-9]{10}")) {
+				System.out.println("Input error. \nPhone # needs to be 10 numbers, no spaces or dashes.");
+				return;
+			}	
 		}
 
 		// attempt to create new user
 		String query;
-		if (address.equals("") && phone.equals("")) {
-			query = "INSERT INTO User VALUES ('" + u + "','" + p + "','" + name + "',NULL,NULL)" + ";";
-		} else if (address.equals(""))
-			query = "INSERT INTO User VALUES ('" + u + "','" + p + "','" + name + "',NULL,'" + phone + "')" + ";";
-		else if (phone.equals(""))
-			query = "INSERT INTO User VALUES ('" + u + "','" + p + "','" + name + "','" + address + "',NULL)" + ";";
+		if (phone.equals(""))
+			query = "INSERT INTO User VALUES ('" + u + "','" + p + "','" + name + "', NULL,'" + state + "','" + city + "')" + ";";
 		else
-			query = "INSERT INTO User VALUES ('" + u + "','" + p + "','" + name + "','" + address + "','" + phone + "')"
-					+ ";";
+			query = "INSERT INTO User VALUES ('" + u + "','" + p + "','" + name + "','"+ phone + "','" + state + "','" + city + "')" + ";";
 
 		int result = Utils.UpdateHelper(query, StartPoint.connect.st);
 		switch (result) {
