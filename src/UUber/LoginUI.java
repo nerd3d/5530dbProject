@@ -7,7 +7,7 @@ import java.util.Arrays;
 
 public class LoginUI {
 	//grabbed an array of states of the web to restrict input to real states.
-static String[] states = {"California,", "Alabama,", "Arkansas,", "Arizona,", "Alaska,", "Colorado,", "Connecticut,", "Delaware,", "Florida,", "Georgia,", "Hawaii,", "Idaho,", "Illinois,", "Indiana,", "Iowa,", "Kansas,", "Kentucky,", "Louisiana,", "Maine,", "Maryland,", "Massachusetts,", "Michigan,", "Minnesota,", "Mississippi,", "Missouri,", "Montana,", "Nebraska,", "Nevada,", "New Hampshire,", "New Jersey,", "New Mexico,", "New York,", "North Carolina,", "North Dakota,", "Ohio,", "Oklahoma,", "Oregon,", "Pennsylvania,", "Rhode Island,", "South Carolina,", "South Dakota,", "Tennessee,", "Texas,", "Utah,", "Vermont,", "Virginia,", "Washington,", "West Virginia,", "Wisconsin,", "Wyoming" };
+static String[] states = {"california,", "alabama,", "arkansas,", "arizona,", "alaska,", "colorado,", "connecticut,", "delaware,", "florida,", "georgia,", "hawaii,", "idaho,", "illinois,", "indiana,", "iowa,", "kansas,", "kentucky,", "louisiana,", "maine,", "maryland,", "massachusetts,", "michigan,", "minnesota,", "mississippi,", "missouri,", "montana,", "nebraska,", "nevada,", "new Hampshire,", "new jersey,", "new mexico,", "new york,", "north carolina,", "north dakota,", "ohio,", "oklahoma,", "oregon,", "pennsylvania,", "rhode Island,", "south carolina,", "south dakota,", "tennessee,", "texas,", "utah,", "vermont,", "virginia,", "washington,", "west virginia,", "wisconsin,", "wyoming" };
 
 	public static void ShowMenu() throws Exception {
 		while (true) {
@@ -121,12 +121,12 @@ static String[] states = {"California,", "Alabama,", "Arkansas,", "Arizona,", "A
 	
 		// ask for address
 		System.out.println("Please enter state:");
-		state = Utils.getInput();
+		state = Utils.getInputToLower();
 		// need to sanitize...
 		if(state != null && !state.equals("") && Arrays.asList(LoginUI.states).contains(state))
 		{
-			if(!Utils.SanitizeInput(state, "[a-zA-Z ]{4,13}")) {
-				System.out.println("State needs to be from 4 - 13 characters long, Letters and spaces only.");
+			if(!Utils.SanitizeInput(state, "[a-zA-Z ]{4,14}")) {
+				System.out.println("State needs to be from 4 - 14 characters long, Letters and spaces only.");
 				return;
 			}
 		}
@@ -137,7 +137,7 @@ static String[] states = {"California,", "Alabama,", "Arkansas,", "Arizona,", "A
 		}
 		// ask for address
 		System.out.println("Please enter city:");
-		city = Utils.getInput();
+		city = Utils.getInputToLower();
 		// need to sanitize...
 		if(city != null && !city.equals(""))
 		{

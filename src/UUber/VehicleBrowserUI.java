@@ -42,8 +42,8 @@ public class VehicleBrowserUI {
 		if(state != null && !state.equals(""))
 		{
 			//sanitize
-			if(!Utils.SanitizeInput(state, "[a-zA-Z ]{4,13}")) {
-				System.out.println("State needs to be from 4 - 13 characters long, Letters and spaces only.");
+			if(!Utils.SanitizeInput(state, "[a-zA-Z ]{4,14}")) {
+				System.out.println("State needs to be from 4 - 14 characters long, Letters and spaces only.");
 				return null;
 			}
 			//add to query: where state = state
