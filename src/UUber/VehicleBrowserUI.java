@@ -94,9 +94,9 @@ public class VehicleBrowserUI {
 			if(sort == 1)
 				//FEEDBACK PROBABLY NEEDS TO BE ON IT's OWN QUERY SO WE DON'T RETURN DUPLICATES
 				// ORDER BY avgRating desc 
-				sortStr = "(SELECT vin, AVG(rating) avgRating FROM Feedback GROUP BY vin) F";//" ORDER BY avg(F.rating) desc";//avg feedback score
+				fromOrder = "(SELECT vin, AVG(rating) avgRating FROM Feedback GROUP BY vin) F ";//" ORDER BY avg(F.rating) desc";//avg feedback score
 			else
-				sortStr = "(SELECT F1.vin, AVG(F1.rating) avgRating FROM Feedback F1,Trust T1 WHERE T1.login = '"+Utils.currentUser+"' AND F1.login = T1.login2 GROUP BY F1.vin) F"; // avg trusted feedback score
+				fromOrder = "(SELECT F1.vin, AVG(F1.rating) avgRating FROM Feedback F1,Trust T1 WHERE T1.login = '"+Utils.currentUser+"' AND F1.login = T1.login2 GROUP BY F1.vin) F "; // avg trusted feedback score
 		}
 		/////////////////////////////////////////////////////////////////////////
 		//adjust query based on caller
@@ -148,7 +148,7 @@ public class VehicleBrowserUI {
 			if(!fromOrder.equals(""))
 				query += " AND F.vin = C.vin";
 			if(sort != 3) {//if special order by...
-				query += sortStr ;
+				query += " ORDER BY F.avgRating desc " ;
 			}
 			else
 				query += " ORDER BY name ";
