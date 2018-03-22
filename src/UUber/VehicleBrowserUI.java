@@ -120,9 +120,9 @@ public class VehicleBrowserUI {
 			/////////////////////////////////////////////////////////////////////////
 			List<String> vinList = new ArrayList<String>();
 			// welcome and list options...wait for input
-			// System.out.println("*** Vehicles ***");
-			System.out.println("Num\tVIN\tDriver");
-			query += "SELECT Owns.vin, User.name ";
+			System.out.println("*** Vehicles ***");
+			//System.out.println("Num\tVIN\tDriver");
+			query += "SELECT Owns.vin, User.login, C.model, C.category ";
 			query += "FROM Owns, User, Car C ";// , Feedback F
 			if (!fromOrder.equals("")) {
 				query += ", " + fromOrder;
@@ -141,13 +141,19 @@ public class VehicleBrowserUI {
 			while (true) {
 				result = Utils.QueryHelper(query, Utils.stmt);
 				int row = 1;
+				System.out.println("************************************");
+				System.out.println("Num\tModel\tDriver\tCategory");
+				System.out.println("____________________________________");
 				while (result.next()) {
 					System.out.print(row + "\t");
-					System.out.print(result.getString("vin") + "\t");
-					System.out.print(result.getString("name") + "\n");
+					//System.out.print(result.getString("vin") + "\t");
+					System.out.print(result.getString("model") + "\t");
+					System.out.print(result.getString("login") + "\t");
+					System.out.print(result.getString("category") + "\n");
 					vinList.add(result.getString("vin"));
 					row++;
 				}
+				System.out.println("************************************");
 				/////////////////////////////////////////////////////////////////////////
 				// Prompt selection or exit vehicle browser
 				/////////////////////////////////////////////////////////////////////////
