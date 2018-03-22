@@ -100,15 +100,26 @@ public class VehicleBrowserUI {
 						+ Utils.currentUser + "' AND F1.login = T1.login2 GROUP BY F1.vin) F "; // avg trusted feedback
 																								// score
 		}
+		String fromAvailable = "";
 		/////////////////////////////////////////////////////////////////////////
 		// adjust query based on caller
 		/////////////////////////////////////////////////////////////////////////
 		switch (caller) {
 		case "Ride":
 			// additional filter of only cars available right now
+			//call method that converts from datetime to day of week and hour (military time)
+			convertToWeekDay();
+			convertToHour();
+			fromAvailable = "";
+			filter += "";
 			break;
 		case "Reservation":
 			// additional filter for reservation: must be available on datetime param
+			//call method that converts from datetime to day of week and hour (military time)
+			convertToWeekDay();
+			convertToHour();
+			fromAvailable = "";
+			filter += "";
 			break;
 		}
 		/////////////////////////////////////////////////////////////////////////
@@ -134,7 +145,7 @@ public class VehicleBrowserUI {
 				query += " ORDER BY F.avgRating desc ";
 			} 
 			else
-				query += " ORDER BY name ";
+				query += " ORDER BY User.login ";
 			/////////////////////////////////////////////////////////////////////////
 			// Display resulting list of cars
 			/////////////////////////////////////////////////////////////////////////
