@@ -15,7 +15,7 @@ public class Utils {
 	static Statement stmt;
 	static String currentUser = "";
 	static DateTimeFormatter formatINP = DateTimeFormatter.ofPattern("uuuu-MM-dd HH");
-	static DateTimeFormatter formatSQL = DateTimeFormatter.ofPattern("uuuu-MM-dd HH:mm:ss");
+	static DateTimeFormatter formatSQL = DateTimeFormatter.ofPattern("uuuu-MM-dd HH:mm:ss.S");
 	
 	public static String getInput() throws Exception {
 		String str;
