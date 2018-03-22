@@ -81,4 +81,10 @@ public class Utils {
 		return result;
 		
 	}
+	public static int convertToWeekDay() {
+		return 1;
+	}
+	public static int convertToHour() {
+		return 1;
+	}
 }

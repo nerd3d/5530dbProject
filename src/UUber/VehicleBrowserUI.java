@@ -108,16 +108,16 @@ public class VehicleBrowserUI {
 		case "Ride":
 			// additional filter of only cars available right now
 			//call method that converts from datetime to day of week and hour (military time)
-			convertToWeekDay();
-			convertToHour();
+			Utils.convertToWeekDay();
+			Utils.convertToHour();
 			fromAvailable = "";
 			filter += "";
 			break;
 		case "Reservation":
 			// additional filter for reservation: must be available on datetime param
 			//call method that converts from datetime to day of week and hour (military time)
-			convertToWeekDay();
-			convertToHour();
+			Utils.convertToWeekDay();
+			Utils.convertToHour();
 			fromAvailable = "";
 			filter += "";
 			break;
