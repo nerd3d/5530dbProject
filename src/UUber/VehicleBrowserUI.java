@@ -23,16 +23,17 @@ public class VehicleBrowserUI {
 		/////////////////////////////////////////////////////////////////////////
 		// asks for filters
 		/////////////////////////////////////////////////////////////////////////
-		System.out.println("Choose filters by typing one of the offered numbers:");
+		System.out.println("Choose filters:");
 		// ask for category
-		System.out.println(
-				"Vehicle Category: (1) No filter (2) SUV (3) Truck (4) Sedan (5) Economy (6) Comfort (7) Luxury");
-		int cat = Integer.parseInt(Utils.getInput());
+		String cat = DriverUI.GetCategory();
+		//System.out.println(
+		//		"Vehicle Category: (1) No filter (2) SUV (3) Truck (4) Sedan (5) Economy (6) Comfort (7) Luxury");
+		//string cat = Integer.parseInt(Utils.getInput());
 		// if invalid input
-		if (cat < 1 || cat > 7) {
+		/*if (cat < 1 || cat > 7) {
 			System.out.println("Invalid input.");
 			return null;
-		}
+		}*/
 		filter = catStringToQuery(cat);
 
 		// ask for address (state)
@@ -105,22 +106,21 @@ public class VehicleBrowserUI {
 		// adjust query based on caller
 		/////////////////////////////////////////////////////////////////////////
 		switch (caller) {
+		case "Reservation":
 		case "Ride":
 			// additional filter of only cars available right now
 			//call method that converts from datetime to day of week and hour (military time)
-			Utils.convertToWeekDay();
-			Utils.convertToHour();
-			fromAvailable = "";
-			filter += "";
+			time.getDayOfWeek().getValue();
+			time.getHour();
+			fromAvailable = ", Available A";
+			filter += "AND A.vin = Owns.vin AND A.day = "+ time.getDayOfWeek().getValue() +" AND A.time_from <= " + time.getHour() + " AND A.time_to >= " + time.getHour();
 			break;
-		case "Reservation":
+		/*case "Reservation":
 			// additional filter for reservation: must be available on datetime param
 			//call method that converts from datetime to day of week and hour (military time)
-			Utils.convertToWeekDay();
-			Utils.convertToHour();
-			fromAvailable = "";
-			filter += "";
-			break;
+			fromAvailable = ", Available A";
+			filter += "AND A.vin = Owns.vin AND A.day = "+ time.getDayOfWeek().getValue() +" AND A.time_from <= " + time.getHour() + " AND A.time_to >= " + time.getHour();
+			break;*/
 		}
 		/////////////////////////////////////////////////////////////////////////
 		// The display loop
@@ -136,7 +136,7 @@ public class VehicleBrowserUI {
 			query += "SELECT Owns.vin, User.login, C.model, C.category ";
 			query += "FROM Owns, User, Car C ";// , Feedback F
 			if (!fromOrder.equals("")) {
-				query += ", " + fromOrder;
+				query += ", " + fromOrder + fromAvailable;
 			}
 			query += "WHERE Owns.login = User.login  AND Owns.vin = C.vin " + filter;
 			if (!fromOrder.equals(""))
@@ -257,10 +257,10 @@ public class VehicleBrowserUI {
 	}
 	
 	//helper method to shrink the size of the above code a little
-	private static String catStringToQuery(int i) {
-		String r = "";
+	private static String catStringToQuery(String i) {
+		//String r = "";
 		// (1) No filter (2) SUV (3) Truck (4) Sedan (5) Economy (6) Comfort (7) Luxury
-		switch (i) {
+		/*switch (i) {
 		case 2:
 			r = "AND C.category = 'suv'";
 			break;
@@ -279,7 +279,7 @@ public class VehicleBrowserUI {
 		case 7:
 			r = "AND C.category = 'luxury'";
 			break;
-		}
-		return r;
+		}*/
+		return "AND C.category = '"+i+"'";
 	}
 }

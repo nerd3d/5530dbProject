@@ -370,7 +370,7 @@ public class DriverUI {
 		return false;
 	}
 
-	private static String GetCategory() throws Exception {
+	public static String GetCategory() throws Exception {
 		// select a category
 		ResultSet cats = Utils.QueryHelper("SELECT * FROM Category;", Utils.stmt);
 		boolean valid = false;

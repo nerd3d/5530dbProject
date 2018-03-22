@@ -3,7 +3,9 @@ package UUber;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.sql.*;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Calendar;
 import java.util.regex.*;
 
 /*
@@ -81,10 +83,10 @@ public class Utils {
 		return result;
 		
 	}
-	public static int convertToWeekDay() {
-		return 1;
+	/*public static int convertToWeekDay(LocalDateTime dt) {
+		return dt.getDayOfWeek().getValue();
 	}
-	public static int convertToHour() {
-		return 1;
-	}
+	public static int convertToHour(LocalDateTime dt) {
+		return dt.getHour();
+	}*/
 }
