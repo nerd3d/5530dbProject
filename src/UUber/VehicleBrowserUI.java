@@ -25,7 +25,7 @@ public class VehicleBrowserUI {
 		/////////////////////////////////////////////////////////////////////////
 		System.out.println("Choose filters:");
 		// ask for category
-		String cat = DriverUI.GetCategory();
+		String cat = DriverUI.GetCategory(false);
 		//System.out.println(
 		//		"Vehicle Category: (1) No filter (2) SUV (3) Truck (4) Sedan (5) Economy (6) Comfort (7) Luxury");
 		//string cat = Integer.parseInt(Utils.getInput());
@@ -34,7 +34,8 @@ public class VehicleBrowserUI {
 			System.out.println("Invalid input.");
 			return null;
 		}*/
-		filter = catStringToQuery(cat);
+		if(!filter.equals(""))
+			filter = catStringToQuery(cat);
 
 		// ask for address (state)
 		System.out.println("Please provide desired state (example: Texas) or skip");
@@ -112,7 +113,7 @@ public class VehicleBrowserUI {
 			//call method that converts from datetime to day of week and hour (military time)
 			time.getDayOfWeek().getValue();
 			time.getHour();
-			fromAvailable = ", Available A";
+			fromAvailable = "Available A ";
 			filter += "AND A.vin = Owns.vin AND A.day = "+ time.getDayOfWeek().getValue() +" AND A.time_from <= " + time.getHour() + " AND A.time_to >= " + time.getHour();
 			break;
 		/*case "Reservation":
@@ -136,7 +137,10 @@ public class VehicleBrowserUI {
 			query += "SELECT Owns.vin, User.login, C.model, C.category ";
 			query += "FROM Owns, User, Car C ";// , Feedback F
 			if (!fromOrder.equals("")) {
-				query += ", " + fromOrder + fromAvailable;
+				query += ", " + fromOrder;
+			}
+			if (!fromAvailable.equals("")) {
+				query += ", " + fromAvailable;
 			}
 			query += "WHERE Owns.login = User.login  AND Owns.vin = C.vin " + filter;
 			if (!fromOrder.equals(""))
@@ -280,6 +284,6 @@ public class VehicleBrowserUI {
 			r = "AND C.category = 'luxury'";
 			break;
 		}*/
-		return "AND C.category = '"+i+"'";
+		return " AND C.category = '"+i+"' ";
 	}
 }

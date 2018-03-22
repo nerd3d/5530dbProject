@@ -350,7 +350,7 @@ public class DriverUI {
 			break;
 		case "category":
 			// select a category
-			changeTo = GetCategory();
+			changeTo = GetCategory(true);
 
 			// update to new value
 			swapEm = "UPDATE Car SET category = '" + changeTo + "' ";
@@ -370,19 +370,23 @@ public class DriverUI {
 		return false;
 	}
 
-	public static String GetCategory() throws Exception {
+	public static String GetCategory(Boolean driver) throws Exception {
 		// select a category
 		ResultSet cats = Utils.QueryHelper("SELECT * FROM Category;", Utils.stmt);
 		boolean valid = false;
 
 		while (!valid) {
-			System.out.println("Please select an appropriate category for your car:");
+			if(driver)
+				System.out.println("Please select an appropriate category for your car:");
+			else
+				System.out.println("Please select an appropriate category for your car, or skip (enter)");
 
 			while (cats.next()) {
 				System.out.println(cats.getString("category"));
 			}
 
 			String select = Utils.getInputToLower();
+			if(!driver && select.equals("")) {return select;}
 			if (Utils.SanitizeInput(select, "[a-zA-Z0-9]{1,20}")) {
 				cats.beforeFirst();
 				while (cats.next()) {
@@ -445,7 +449,7 @@ public class DriverUI {
 		}
 
 		// select a category
-		category = GetCategory();
+		category = GetCategory(true);
 
 		// All info gathered. Display and confirm before submitting
 		while (true) {
