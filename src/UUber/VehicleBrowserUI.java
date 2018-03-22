@@ -110,7 +110,6 @@ public class VehicleBrowserUI {
 			//view feedback
 			//favorite
 			//back to vehicle browser
-			//exit vehicle browser
 			break;
 		case "Reservation":
 			//any additional filter for reservation?
@@ -120,7 +119,6 @@ public class VehicleBrowserUI {
 			//view feedback
 			//favorite
 			//back to vehicle browser
-			//exit vehicle browser
 			break;
 		case "MainMenu":
 			//selecting a car will give menu of
@@ -128,7 +126,6 @@ public class VehicleBrowserUI {
 			//view feedback
 			//favorite
 			//back to vehicle browser
-			//exit vehicle browser
 			break;
 		default:
 			return null;
@@ -153,27 +150,80 @@ public class VehicleBrowserUI {
 			else
 				query += " ORDER BY name ";
 			
-			result = Utils.QueryHelper(query, Utils.stmt);
-			int row = 1;
-			while(result.next()) {
-				System.out.print(row+"\t");
-				System.out.print(result.getString("vin")+"\t");
-				System.out.print(result.getString("name") + "\n");
-				vinList.add(result.getString("vin"));
-				row++;
-			}
-			System.out.println("Select a vehicle by the left-most number.");
-			int selected = Integer.parseInt(Utils.getInput());
-			if(selected < 1 || selected > vinList.size())
+			while(true)
 			{
-				System.out.println("Invalid selection.");
+				result = Utils.QueryHelper(query, Utils.stmt);
+				int row = 1;
+				while(result.next()) {
+					System.out.print(row+"\t");
+					System.out.print(result.getString("vin")+"\t");
+					System.out.print(result.getString("name") + "\n");
+					vinList.add(result.getString("vin"));
+					row++;
+				}
+			System.out.println("Select a vehicle by the left-most number.");
+			System.out.println("Or, type nothing and hit enter to quit vehicle browser.");
+			String in = Utils.getInput();
+			if(in == null || in.equals(""))
 				return null;
+			try{
+				int selected = Integer.parseInt(in);
+				if(selected < 1 || selected > vinList.size())
+				{
+					System.out.println("Invalid selection.");
+					return null;
+				}
+				String selectedVin = vinList.get(selected-1);
+				System.out.println("Got vin: "+ selectedVin);
+				//Selected car menu:
+				System.out.println("Choose an option by its number.");
+				//1. give feedback
+				System.out.println("1. View feedback");
+				//2. view feedback
+				System.out.println("2. Give feedback");
+				//3. favorite
+				System.out.println("3. Favorite this car");
+				//4. unfavorite
+				System.out.println("4. Un-Favorite this car");
+				//5. back to car list
+				System.out.println("5. Back");
+															//if some selects "ride or reserve": 	
+															//return vinList.get(selected-1);
+				String in1 = Utils.getInput();
+				if(in1 == null || in1.equals(""))
+				{
+					System.out.println("Invalid input.");
+					return null;
+				}
+				try {
+					int in1Int = Integer.parseInt(in1);
+					switch (in1Int){
+					case 1:
+						break;
+					case 2:
+						break;
+					case 3://add favorite
+						System.out.println("Vehicle added to favorites.");
+						Utils.UpdateHelper("INSERT IGNORE INTO Favorite VALUES('"+Utils.currentUser+"', '"+selectedVin+"');", Utils.stmt);//favorite a car
+						break;
+					case 4://remove favorite
+						System.out.println("Vehicle removed from favorites.");
+						Utils.UpdateHelper("DELETE FROM Favorite WHERE login = '"+Utils.currentUser+"' AND vin = '"+selectedVin+"';", Utils.stmt);//favorite a car
+						break;
+					case 5:
+						break;//continue to start of while loop (redraws car list)
+					default:
+						System.out.println("Invalid input. Returning to vehicle browser.");
+						break;
+					}
+				}
+				catch(Exception e) {System.out.println("Invalid selection.");return null;}
 			}
-			System.out.println("Got vin: "+ vinList.get(selected-1));
-			return vinList.get(selected-1);
+			catch(Exception e) {System.out.println("Invalid selection.");return null;}
 			//System.out.println("\n<press any key to go back>"); // replace with selection options
 			//Utils.getInput();
 			//return null; // remove this when implemented!
+			}
 		}
 	}
 
