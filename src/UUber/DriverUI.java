@@ -204,10 +204,6 @@ public class DriverUI {
 				}
 			}
 
-			/*
-			 * validate there is NO conflicts before attempting to insert!
-			 */
-
 			// attempt to insert shift for given cars
 			for (String vin : vins) {
 				to = from + duration;
@@ -229,6 +225,24 @@ public class DriverUI {
 	}
 
 	private static boolean InsertAvailability(String vin, DayOfWeek day, int from, int to) throws Exception {
+		String conflicts = "SELECT time_from, time_to FROM Available ";
+		conflicts += "WHERE vin = '" + vin + "' ";
+		conflicts += "AND day = '" + day.getValue() + "';";
+		ResultSet conRes = Utils.QueryHelper(conflicts, Utils.stmt);
+		while (conRes.next()) {
+			// validate From-To's don't overlap
+			int exFrom = conRes.getInt("time_from");
+			int exTo = conRes.getInt("time_to");
+			if (exFrom < from && from < exTo) {
+				System.out.println("ERROR: Availability overlaps with existing time block for this car");
+				return false;
+			}
+			if (exFrom < to && to < exTo) {
+				System.out.println("ERROR: Availability overlaps with existing time block for this car");
+				return false;
+			}
+		}
+
 		String insert = "INSERT INTO Available VALUES ('" + vin + "','" + day.getValue() + "','" + from + "','" + to
 				+ "');";
 		if (Utils.UpdateHelper(insert, Utils.stmt) < 0)
@@ -245,7 +259,6 @@ public class DriverUI {
 		query += "AND login = '" + Utils.currentUser + "';";
 		ResultSet owned = Utils.QueryHelper(query, Utils.stmt);
 
-		System.out.println("VIN\tMake\tModel\tYear\tCategory");
 		int num = 1;
 		while (owned.next()) {
 			System.out.print(num + "\t");
@@ -262,9 +275,11 @@ public class DriverUI {
 		num = Integer.parseInt(Utils.getInput());
 		owned.beforeFirst();
 		owned.relative(num);
+		String vinSelected = owned.getString("O.vin");
 
 		// get input for which field to edit / or delete car?
-		System.out.print("Select a field to Edit: ");
+		System.out.println("Select a field to Edit: ");
+		System.out.println("VIN\nMake\nModel\nYear\nCategory");
 		String field = Utils.getInputToLower();
 		String changeTo;
 		String swapEm = "";
@@ -347,17 +362,17 @@ public class DriverUI {
 		}
 
 		// edit entry
-		swapEm += "WHERE vin = '" + owned.getString("O.vin") + "';";
-		if(Utils.UpdateHelper(swapEm, Utils.stmt) >= 0)
+		swapEm += "WHERE vin = '" + vinSelected + "';";
+
+		if (Utils.UpdateHelper(swapEm, Utils.stmt) >= 0)
 			return true;
 
 		return false;
 	}
 
 	private static String GetCategory() throws Exception {
-		String category = null;
 		// select a category
-		ResultSet cats = Utils.QueryHelper("SELECT * FROM Category", Utils.stmt);
+		ResultSet cats = Utils.QueryHelper("SELECT * FROM Category;", Utils.stmt);
 		boolean valid = false;
 
 		while (!valid) {
@@ -369,16 +384,18 @@ public class DriverUI {
 
 			String select = Utils.getInputToLower();
 			if (Utils.SanitizeInput(select, "[a-zA-Z0-9]{1,20}")) {
-				while (cats.previous()) {
-					if (cats.getString("category").equalsIgnoreCase(select)) {
+				cats.beforeFirst();
+				while (cats.next()) {
+					String cat = cats.getString("category");
+					if (cat.equalsIgnoreCase(select)) {
 						valid = true;
-						category = select;
+						return select;
 					}
 				}
 			}
 		}
-		return category;
 
+		throw new Exception("Invalid category selected");
 	}
 
 	private static boolean RegisterCar() throws Exception {
