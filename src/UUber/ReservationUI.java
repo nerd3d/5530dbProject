@@ -1,5 +1,6 @@
 package UUber;
 
+import java.sql.ResultSet;
 import java.time.*;
 import java.time.format.*;
 
@@ -74,17 +75,62 @@ public class ReservationUI {
 	private static void DisplayReservations() throws Exception {
 		String query = "";
 
-		query += "SELECT vin, time ";
-		query += "FROM Reservation ";
+		query += "SELECT resid, O.login, category, model, time ";
+		query += "FROM Reservation R, Car C, Owns O ";
 		query += "WHERE time > NOW() ";
-		query += "AND login = '" + Utils.currentUser + "'";
-		query += ";";
+		query += "AND R.vin = C.vin ";
+		query += "AND O.vin = C.vin ";
+		query += "AND R.login = '" + Utils.currentUser + "';";
 
 		System.out.println("*** Future Reservations ***");
-		System.out.println(query);
-		System.out.println("<press any key to go back>");
-		// add input loop and whatever
-		Utils.getInput();
+		ResultSet reservations = Utils.QueryHelper(query, Utils.stmt);
+		System.out.println("NUM\tDriver\tCategory\tModel\tTime");
+		System.out.println("___________________________________________________________________");
+
+		int num = 1;
+		while (reservations.next()) {
+			System.out.print(num + "\t");
+			System.out.print(reservations.getString("O.login") + "\t");
+			System.out.print(reservations.getString("category") + "\t");
+			System.out.print(reservations.getString("model") + "\t");
+			System.out.print(reservations.getString("time") + "\n");
+			num++;
+		}
+
+		System.out.println("Select resevation to remove OR press enter to return");
+		String exit = Utils.getInput();
+		if (exit.equalsIgnoreCase(""))
+			return;
+
+		num = Integer.parseInt(exit);
+		reservations.last();
+		if (num > 0 && num <= reservations.getRow()) {
+			reservations.beforeFirst();
+			reservations.relative(num);
+			int deleteMe = reservations.getInt("resid");
+			System.out.print(num + "\t");
+			System.out.print(reservations.getString("O.login") + "\t");
+			System.out.print(reservations.getString("category") + "\t");
+			System.out.print(reservations.getString("model") + "\t");
+			System.out.print(reservations.getString("time") + "\n");
+			System.out.println("Are you sure you want to cancel this reservation?");
+			System.out.print("(y / n): ");
+			String yesorno = null;
+			while (yesorno == null) {
+				yesorno = Utils.getInput();
+				if (yesorno.equalsIgnoreCase("y")) {
+					Utils.UpdateHelper("DELETE FROM Reservation WHERE resid = " + deleteMe + ";", Utils.stmt);
+					System.out.println("Reservation Removed");
+					return;
+				}
+				if (yesorno.equalsIgnoreCase("n")) {
+					System.out.println("Aborting Cancel.. returning to main menu.");
+					return;
+				}
+			}
+		} else {
+			System.out.println("ERROR: expecting integer within range");
+		}
 	}
 
 	/*
@@ -108,8 +154,8 @@ public class ReservationUI {
 			System.out.println("Cancelling Reservation...");
 			return false;
 		}
-		
-		/* Attempt to insert reservation. If Exception is caught, return false*/
+
+		/* Attempt to insert reservation. If Exception is caught, return false */
 		System.out.println("Not yet implemented");
 
 		return true;
