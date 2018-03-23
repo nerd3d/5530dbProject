@@ -80,7 +80,11 @@ public class VehicleBrowserUI {
 		/////////////////////////////////////////////////////////////////////////
 		// specify sorting: (average feedback score, average trusted feedback score)
 		System.out.println("Sort by average feedback score (1) or according to trusted users (2) or no sort (3)");
-		int sort = Integer.parseInt(Utils.getInput());
+		int sort = 0;
+		try {
+			sort = Integer.parseInt(Utils.getInput());
+		}
+		catch(Exception e){System.out.println("Invalid input"); return null;}
 		// if invalid input
 		if (sort < 1 || sort > 3) {
 			System.out.println("Invalid input.");
@@ -131,6 +135,7 @@ public class VehicleBrowserUI {
 			// Combine and execute query
 			/////////////////////////////////////////////////////////////////////////
 			List<String> vinList = new ArrayList<String>();
+			List<String> driverList = new ArrayList<String>();
 			// welcome and list options...wait for input
 			System.out.println("*** Vehicles ***");
 			//System.out.println("Num\tVIN\tDriver");
@@ -166,6 +171,7 @@ public class VehicleBrowserUI {
 					System.out.print(result.getString("login") + "\t");
 					System.out.print(result.getString("category") + "\n");
 					vinList.add(result.getString("vin"));
+					driverList.add(result.getString("login"));
 					row++;
 				}
 				System.out.println("************************************");
@@ -190,23 +196,20 @@ public class VehicleBrowserUI {
 					System.out.println("Got vin: " + selectedVin);
 					// Selected car menu:
 					System.out.println("Choose an action for this vehicle.");
-					// 1. give feedback
 					System.out.println("1. View feedback");
-					// 2. view feedback
 					System.out.println("2. Give feedback");
-					// 3. favorite
 					System.out.println("3. Favorite this car");
-					// 4. unfavorite
 					System.out.println("4. Un-Favorite this car");
+					System.out.println("5. View top useful feedback for this vehicle's driver.");
 					if (caller.equals("Reservation")) {
-						System.out.println("5. Make Reservation.");
-						System.out.println("6. Back");
+						System.out.println("6. Make Reservation.");
+						System.out.println("7. Back");
 					} else if (caller.equals("Rides")) {
-						System.out.println("5. Record ride.");
-						System.out.println("6. Back");
+						System.out.println("6. Record ride.");
+						System.out.println("7. Back");
 					} else
 						// 5. back to car list
-						System.out.println("5. Back");
+						System.out.println("6. Back");
 					// if some selects "ride or reserve":
 					// return vinList.get(selected-1);
 					String in1 = Utils.getInput();
@@ -218,8 +221,10 @@ public class VehicleBrowserUI {
 						int in1Int = Integer.parseInt(in1);
 						switch (in1Int) {
 						case 1:// view feedback
+							FeedbackUI.viewFeedback(selectedVin);
 							break;
 						case 2:// give feedback
+							FeedbackUI.giveFeedback(selectedVin);
 							break;
 						case 3:// add favorite
 							System.out.println("Vehicle added to favorites.");
@@ -232,10 +237,13 @@ public class VehicleBrowserUI {
 									+ "' AND vin = '" + selectedVin + "';", Utils.stmt);// favorite a car
 							break;
 						case 5:
+							FeedbackUI.viewTopUseful(driverList.get(selected));
+							break;
+						case 6:
 							if (caller.equals("Reservation") || caller.equals("Rides"))
 								return selectedVin;
 							break;// continue to start of while loop (redraws car list)
-						case 6:
+						case 7:
 							if (caller.equals("Reservation") || caller.equals("Rides"))
 								return selectedVin;
 							System.out.println("Invalid input. Returning to vehicle browser.");
@@ -252,38 +260,12 @@ public class VehicleBrowserUI {
 					System.out.println("Invalid selection.");
 					return null;
 				}
-				// System.out.println("\n<press any key to go back>"); // replace with selection
-				// options
-				// Utils.getInput();
-				// return null; // remove this when implemented!
 			}
 		}
 	}
 	
 	//helper method to shrink the size of the above code a little
 	private static String catStringToQuery(String i) {
-		//String r = "";
-		// (1) No filter (2) SUV (3) Truck (4) Sedan (5) Economy (6) Comfort (7) Luxury
-		/*switch (i) {
-		case 2:
-			r = "AND C.category = 'suv'";
-			break;
-		case 3:
-			r = "AND C.category = 'truck'";
-			break;
-		case 4:
-			r = "AND C.category = 'sedan'";
-			break;
-		case 5:
-			r = "AND C.category = 'economy'";
-			break;
-		case 6:
-			r = "AND C.category = 'comfort'";
-			break;
-		case 7:
-			r = "AND C.category = 'luxury'";
-			break;
-		}*/
 		return " AND C.category = '"+i+"' ";
 	}
 }
