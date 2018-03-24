@@ -53,9 +53,10 @@ public class ReservationUI {
 
 			if (time != null) {
 				// make sure time isn't duplicated by this user
-				ResultSet existingRes = Utils.QueryHelper("SELECT * FROM Reservation WHERE login = '" + Utils.currentUser
-						+ "' AND time = '" + time.format(Utils.formatSQL).toString() + "';", Utils.stmt);
-				if(existingRes.next()) {
+				ResultSet existingRes = Utils.QueryHelper("SELECT * FROM Reservation WHERE login = '"
+						+ Utils.currentUser + "' AND time = '" + time.format(Utils.formatSQL).toString() + "';",
+						Utils.stmt);
+				if (existingRes.next()) {
 					System.out.println("ERROR: You already have a reservation for this time slot");
 					return;
 				}
@@ -68,10 +69,10 @@ public class ReservationUI {
 
 				if (AddReservation(carResult, time)) {
 					System.out.println("Reservation Successfully Added.");
-					
+
 					// Suggest similar cars for future rides
 					SuggestCars(carResult);
-					
+
 				} else {
 					System.out.println("Reservation Cancelled.");
 				}
@@ -82,10 +83,30 @@ public class ReservationUI {
 	}
 
 	/*
-	 * Given a Car VIN number: List other cars ridden by a user that also rode this car.
-	 * 	Sort by most popular (number of rides by given user)
-	 * */
-	private static void SuggestCars(String vin) {
+	 * Given a Car VIN number: List other cars ridden by a user that also rode this
+	 * car. Sort by most popular (number of rides by given user)
+	 */
+	private static void SuggestCars(String vin) throws Exception {
+		System.out.println("Great selection! May we also recomend these other popular cars for future trips?");
+
+		System.out.println("Driver\tCategory\tYear\tModel");
+
+		// List of Vins also ridden by users that rode this car
+		String otherCars = "SELECT R.vin, COUNT(R.vin) rides FROM Ride R, Ride X "
+				+ "WHERE R.vin <> X.vin AND X.vin = '" + vin + "' AND R.login=X.login GROUP BY R.vin";
+
+		// driver and Car data for the 'otherCar' list
+		String carData = "SELECT O.login, category, year, model, rides FROM Car C, Owns O, " + "(" + otherCars
+				+ ") S WHERE S.vin = C.vin AND C.vin = O.vin ORDER BY rides DESC;";
+
+		ResultSet recomend = Utils.QueryHelper(carData, Utils.stmt);
+		while (recomend.next()) {
+			String disp = recomend.getString("login") + "\t";
+			disp += recomend.getString("category") + "\t";
+			disp += recomend.getString("year") + "\t";
+			disp += recomend.getString("model") + "\t";
+			System.out.println(disp);
+		}
 		
 	}
 
