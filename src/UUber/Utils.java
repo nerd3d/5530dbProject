@@ -53,7 +53,7 @@ public class Utils {
 	 */
 	public static ResultSet QueryHelper(String query, Statement stmt) throws Exception{
 		ResultSet result;
-		System.out.println("executing query: "+query);
+		//System.out.println("executing query: "+query);
 	 	try{
 		 	result=stmt.executeQuery(query);
 	 	}
@@ -71,7 +71,7 @@ public class Utils {
 	 */
 	public static int UpdateHelper(String query, Statement stmt) throws Exception{
 		int result;
-		System.out.println("executing query: "+query);
+		//System.out.println("executing query: "+query);
 	 	try{
 		 	result=stmt.executeUpdate(query);
 	 	}

@@ -20,11 +20,12 @@ public class DatabaseUI {
 			System.out.println("2. Rides");
 			System.out.println("3. Vehicles");
 			System.out.println("4. Users");
+			System.out.println("5. UUber Statistics");
 			if (isDriver) {
-				System.out.println("5. Driver Options");
-				System.out.println("6. Logout");
+				System.out.println("6. Driver Options");
+				System.out.println("7. Logout");
 			} else {
-				System.out.println("5. Logout");
+				System.out.println("6. Logout");
 			}
 
 			switch (Utils.getInput()) {
@@ -35,17 +36,20 @@ public class DatabaseUI {
 				RidesUI.ShowMenu();
 				break;
 			case "3":
-				String vin = VehicleBrowserUI.ShowMenu("MainMenu", LocalDateTime.parse(LocalDateTime.now().format(Utils.formatINP).toString(), Utils.formatINP));
+				VehicleBrowserUI.ShowMenu("MainMenu", LocalDateTime.parse(LocalDateTime.now().format(Utils.formatINP).toString(), Utils.formatINP));
 				break;
 			case "4":
 				UserUI.ShowMenu();
 				break;
 			case "5":
+				StatisticsUI.ShowMenu();
+				break;
+			case "6":
 				if (isDriver) {
 					DriverUI.ShowMenu();
 					break;
 				}
-			case "6":
+			case "7":
 				if (Quit())
 					return;
 				else
