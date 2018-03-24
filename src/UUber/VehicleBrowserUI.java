@@ -35,8 +35,8 @@ public class VehicleBrowserUI {
 		 * if (cat < 1 || cat > 7) { System.out.println("Invalid input."); return null;
 		 * }
 		 */
-		// if(!filter.equals(""))
-		filter = catStringToQuery(cat);
+		if (!cat.equals(""))
+			filter = catStringToQuery(cat);
 
 		// ask for address (state)
 		System.out.println("Please provide desired state (example: Texas) or skip");

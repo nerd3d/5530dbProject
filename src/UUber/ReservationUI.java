@@ -68,6 +68,10 @@ public class ReservationUI {
 
 				if (AddReservation(carResult, time)) {
 					System.out.println("Reservation Successfully Added.");
+					
+					// Suggest similar cars for future rides
+					SuggestCars(carResult);
+					
 				} else {
 					System.out.println("Reservation Cancelled.");
 				}
@@ -75,6 +79,14 @@ public class ReservationUI {
 				return;
 			}
 		}
+	}
+
+	/*
+	 * Given a Car VIN number: List other cars ridden by a user that also rode this car.
+	 * 	Sort by most popular (number of rides by given user)
+	 * */
+	private static void SuggestCars(String vin) {
+		
 	}
 
 	/*
