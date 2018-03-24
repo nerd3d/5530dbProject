@@ -1,13 +1,17 @@
 package UUber;
 
 import java.sql.ResultSet;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class FeedbackUI {
-
+static Boolean end = false;
 	public static void viewFeedback(String vin) {
-		while(true)
+		end = false;
+		while(!end)
 		{
 			//get all feedbacks for this vin
 			String query = "SELECT login, date, rating, text, fid FROM Feedback WHERE vin = '" + vin + "';";
@@ -38,9 +42,56 @@ public class FeedbackUI {
 	}
 	public static void giveFeedback(String vin) {
 		//check database Owns to see if current user owns this vin
+		String ownerQuery = "SELECT * FROM Owns WHERE login = '"+Utils.currentUser+"' AND vin = '"+vin+"';";
+		try {
+		ResultSet r = Utils.QueryHelper(ownerQuery, Utils.stmt);
+		if(r.next())
+			System.out.println("Can not give feedback on yourself.");
+		}
+		catch(Exception e) {
+			System.out.println("Failed to connect, or bad input.");
+		}
 		//check database Feedback to see if current user already made a feedback for this vin
+		String alreadyQuery = "SELECT * FROM Feedback WHERE login = '"+Utils.currentUser+"' AND vin = '"+vin+"';";
+		try {
+		ResultSet r1 = Utils.QueryHelper(alreadyQuery, Utils.stmt);
+		if(r1.next())
+			System.out.println("Can not give feedback a second time on the same vehicle.");
+		}
+		catch(Exception e) {
+			System.out.println("Failed to connect, or bad input.");
+		}
 		
-		//insert into feedback a new Feedback row after asking for input.
+		System.out.println("Choose rating 1-10 (10 means excellent):");
+		try {
+			//rating
+			int rating = Integer.parseInt(Utils.getInput());// could fail if input is not a number
+			if(rating < 1 || rating > 10)
+				throw new NumberFormatException();
+			try {
+				//text
+				System.out.println("Provide a review if desired (300 characters max, no special chars) or simply hit enter:");
+				String text = Utils.getInput();
+				if(text == null)
+					text = "";
+				if(!Utils.SanitizeInput(text, "[a-zA-Z.,! ]{0,300}"))
+				{
+					throw new RuntimeException();
+				}
+				//insert into feedback a new Feedback row after asking for input.
+				java.util.Date date=new java.util.Date();
+				java.sql.Date sqlDate=new java.sql.Date(date.getTime());
+				String inStmt = "INSERT INTO Feedback (login, vin, date, rating, text) VALUES('"+Utils.currentUser+"', '"+vin+"', '"+sqlDate+"', "+rating+", '"+text+"');";
+				try {
+				int r1 = Utils.UpdateHelper(inStmt, Utils.stmt);
+				if(r1 == 1)
+					System.out.println("Feedback submitted.");
+				}
+				catch(Exception e) {
+					System.out.println("Failed to connect, or bad input.");
+				}
+			}catch(Exception e) {System.out.println("Bad input. Text can't contain special characters. Max 300 characters.");}
+		}catch(Exception e) {System.out.println("Bad input. Must provide integer from 1 to 10.");}
 	}
 	private static void viewAndMenu(String query) {
 		ResultSet result;
@@ -66,14 +117,17 @@ public class FeedbackUI {
 			}
 			
 			//Select a feedback number (left-most number) to rate it.
-			System.out.print("Select a feedback (by left-most number) to rate it.");
+			System.out.println("Select a feedback (by left-most number) to rate it.");
 			//Hit enter to go back to Vehicle Browser.
-			System.out.print("Hit Enter with no entry to go back.");
+			System.out.println("Hit Enter with no entry to go back.");
 			//if selected feedback is user's own feedback (Utils.currentUser.equals(that line's login)), refuse, say they can't
 			//rate own feedback.
 			String in = Utils.getInput();
 			if(in == null || in.equals("")) //exit feedback
+			{
+				end = true;
 				return;				
+			}
 			int inInt = 0;
 			try {
 				inInt = Integer.parseInt(in)-1;
@@ -83,7 +137,7 @@ public class FeedbackUI {
 			if(usrList.size() > inInt && inInt >= 0) //attempt to rate feedback
 			{  
 				if(usrList.get(inInt).equals(Utils.currentUser))//cancel if own feedback
-					System.out.print("Can't rate own feedback.");
+					System.out.println("Can't rate own feedback.");
 				else
 				{
 					//rate feedback
@@ -107,7 +161,7 @@ public class FeedbackUI {
 				}
 			}
 			else {
-				System.out.print("Specified user is not in this list.");
+				System.out.println("Specified user is not in this list.");
 			}
 		}
 		catch(Exception e) {System.out.println("Failed to retrieve feedback.");}
