@@ -70,12 +70,12 @@ public class StatisticsUI {
 				disp += result.getString("make") + "\t";
 				disp += result.getString("model") + "\t";
 				disp += result.getString("rides");
-				
+
 				System.out.println(disp);
 			}
 			System.out.println("--------------------------------------------------------\n");
 		}
-		
+
 		System.out.println("<Press Enter to Return>");
 		Utils.getInput();
 	}
@@ -118,18 +118,60 @@ public class StatisticsUI {
 				disp += result.getString("make") + "\t";
 				disp += result.getString("model") + "\t";
 				disp += result.getString("average");
-				
+
 				System.out.println(disp);
 			}
 			System.out.println("--------------------------------------------------------\n");
 		}
-		
+
 		System.out.println("<Press Enter to Return>");
 		Utils.getInput();
 	}
 
-	private static void PopularDrivers() {
+	private static void PopularDrivers() throws Exception {
+		System.out.print("Limit results per category to (default 5): ");
+		int limit = 5;
+		boolean valid = false;
+		while (!valid) {
+			try {
+				String lim = Utils.getInput();
+				if (lim.isEmpty())
+					break;
+				limit = Integer.parseInt(lim);
+				valid = true;
+			} catch (Exception e) {
+				System.out.println("ERROR: Please enter a single integer");
+			}
+		}
+
 		
+		ArrayList<String> categories = new ArrayList<String>();
+		ResultSet result = Utils.QueryHelper("SELECT * FROM Category;", Utils.stmt);
+		while (result.next()) {
+			categories.add(result.getString("category"));
+		}
+
+		for (String cat : categories) {
+			System.out.println("Category = " + cat);
+			System.out.println("Driver\tAverage Rating");
+			System.out.println("--------------------------------------------------------");
+			String query = "SELECT O.login, rate FROM Car C, Owns O, "
+					+ "(SELECT O.login, AVG(rating) rate FROM Owns O, Feedback F WHERE O.vin = F.vin GROUP BY O.login) R "
+					+ "WHERE C.vin = O.vin AND O.login = R.login AND C.category = '" + cat
+					+ "' ORDER BY rate DESC LIMIT " + limit + ";";
+			result = Utils.QueryHelper(query, Utils.stmt);
+
+			while (result.next()) {
+				String disp = result.getString("login") + "\t";
+				disp += result.getString("rate");
+
+				System.out.println(disp);
+			}
+			System.out.println("--------------------------------------------------------\n");
+		}
+
+		System.out.println("<Press Enter to Return>");
+		Utils.getInput();
 
 	}
 }
