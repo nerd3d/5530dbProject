@@ -26,16 +26,17 @@ public class VehicleBrowserUI {
 		System.out.println("Choose filters:");
 		// ask for category
 		String cat = DriverUI.GetCategory(false);
-		//System.out.println(
-		//		"Vehicle Category: (1) No filter (2) SUV (3) Truck (4) Sedan (5) Economy (6) Comfort (7) Luxury");
-		//string cat = Integer.parseInt(Utils.getInput());
+		// System.out.println(
+		// "Vehicle Category: (1) No filter (2) SUV (3) Truck (4) Sedan (5) Economy (6)
+		// Comfort (7) Luxury");
+		// string cat = Integer.parseInt(Utils.getInput());
 		// if invalid input
-		/*if (cat < 1 || cat > 7) {
-			System.out.println("Invalid input.");
-			return null;
-		}*/
-		if(!filter.equals(""))
-			filter = catStringToQuery(cat);
+		/*
+		 * if (cat < 1 || cat > 7) { System.out.println("Invalid input."); return null;
+		 * }
+		 */
+		// if(!filter.equals(""))
+		filter = catStringToQuery(cat);
 
 		// ask for address (state)
 		System.out.println("Please provide desired state (example: Texas) or skip");
@@ -62,7 +63,7 @@ public class VehicleBrowserUI {
 			filter += " AND User.city = '" + city + "'";
 		}
 		// ask for model keyword
-		System.out.println("Please provide model keyword (example: BMW) or skip");
+		System.out.println("Please provide model keyword (example: Corolla) or skip");
 		String keyword = Utils.getInputToLower();
 		if (keyword != null && !keyword.equals("")) {
 			// sanitize
@@ -83,8 +84,10 @@ public class VehicleBrowserUI {
 		int sort = 0;
 		try {
 			sort = Integer.parseInt(Utils.getInput());
+		} catch (Exception e) {
+			System.out.println("Invalid input");
+			return null;
 		}
-		catch(Exception e){System.out.println("Invalid input"); return null;}
 		// if invalid input
 		if (sort < 1 || sort > 3) {
 			System.out.println("Invalid input.");
@@ -114,18 +117,22 @@ public class VehicleBrowserUI {
 		case "Reservation":
 		case "Ride":
 			// additional filter of only cars available right now
-			//call method that converts from datetime to day of week and hour (military time)
+			// call method that converts from datetime to day of week and hour (military
+			// time)
 			time.getDayOfWeek().getValue();
 			time.getHour();
 			fromAvailable = "Available A ";
-			filter += "AND A.vin = Owns.vin AND A.day = "+ time.getDayOfWeek().getValue() +" AND A.time_from <= " + time.getHour() + " AND A.time_to >= " + time.getHour();
+			filter += "AND A.vin = Owns.vin AND A.day = " + time.getDayOfWeek().getValue() + " AND A.time_from <= "
+					+ time.getHour() + " AND A.time_to >= " + time.getHour();
 			break;
-		/*case "Reservation":
-			// additional filter for reservation: must be available on datetime param
-			//call method that converts from datetime to day of week and hour (military time)
-			fromAvailable = ", Available A";
-			filter += "AND A.vin = Owns.vin AND A.day = "+ time.getDayOfWeek().getValue() +" AND A.time_from <= " + time.getHour() + " AND A.time_to >= " + time.getHour();
-			break;*/
+		/*
+		 * case "Reservation": // additional filter for reservation: must be available
+		 * on datetime param //call method that converts from datetime to day of week
+		 * and hour (military time) fromAvailable = ", Available A"; filter +=
+		 * "AND A.vin = Owns.vin AND A.day = "+ time.getDayOfWeek().getValue()
+		 * +" AND A.time_from <= " + time.getHour() + " AND A.time_to >= " +
+		 * time.getHour(); break;
+		 */
 		}
 		/////////////////////////////////////////////////////////////////////////
 		// The display loop
@@ -138,7 +145,7 @@ public class VehicleBrowserUI {
 			List<String> driverList = new ArrayList<String>();
 			// welcome and list options...wait for input
 			System.out.println("*** Vehicles ***");
-			//System.out.println("Num\tVIN\tDriver");
+			// System.out.println("Num\tVIN\tDriver");
 			query += "SELECT Owns.vin, User.login, C.model, C.category ";
 			query += "FROM Owns, User, Car C ";// , Feedback F
 			if (!fromOrder.equals("")) {
@@ -152,8 +159,7 @@ public class VehicleBrowserUI {
 				query += " AND F.vin = C.vin";
 			if (sort != 3) {// if special order by...
 				query += " ORDER BY F.avgRating desc ";
-			} 
-			else
+			} else
 				query += " ORDER BY User.login ";
 			/////////////////////////////////////////////////////////////////////////
 			// Display resulting list of cars
@@ -166,7 +172,7 @@ public class VehicleBrowserUI {
 				System.out.println("____________________________________");
 				while (result.next()) {
 					System.out.print(row + "\t");
-					//System.out.print(result.getString("vin") + "\t");
+					// System.out.print(result.getString("vin") + "\t");
 					System.out.print(result.getString("model") + "\t");
 					System.out.print(result.getString("login") + "\t");
 					System.out.print(result.getString("category") + "\n");
@@ -263,9 +269,9 @@ public class VehicleBrowserUI {
 			}
 		}
 	}
-	
-	//helper method to shrink the size of the above code a little
+
+	// helper method to shrink the size of the above code a little
 	private static String catStringToQuery(String i) {
-		return " AND C.category = '"+i+"' ";
+		return " AND C.category = '" + i + "' ";
 	}
 }
