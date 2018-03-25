@@ -21,11 +21,12 @@ public class DatabaseUI {
 			System.out.println("3. Vehicles");
 			System.out.println("4. Users");
 			System.out.println("5. UUber Statistics");
+			System.out.println("6. Top Users");
 			if (isDriver) {
-				System.out.println("6. Driver Options");
-				System.out.println("7. Logout");
+				System.out.println("7. Driver Options");
+				System.out.println("8. Logout");
 			} else {
-				System.out.println("6. Logout");
+				System.out.println("7. Logout");
 			}
 
 			switch (Utils.getInput()) {
@@ -45,11 +46,14 @@ public class DatabaseUI {
 				StatisticsUI.ShowMenu();
 				break;
 			case "6":
+				Awards.ShowMenu();
+				break;
+			case "7":
 				if (isDriver) {
 					DriverUI.ShowMenu();
 					break;
 				}
-			case "7":
+			case "8":
 				if (Quit())
 					return;
 				else
