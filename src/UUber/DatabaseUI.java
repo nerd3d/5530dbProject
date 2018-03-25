@@ -46,7 +46,7 @@ public class DatabaseUI {
 				StatisticsUI.ShowMenu();
 				break;
 			case "6":
-				Awards.ShowMenu();
+				//Awards.ShowMenu();
 				break;
 			case "7":
 				if (isDriver) {
