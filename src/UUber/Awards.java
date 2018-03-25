@@ -40,13 +40,27 @@ public class Awards {
 				System.out.print(r.getString("user") + "\t");
 				System.out.print(r.getString("trust_score") + "\n");
 			}
+			r.close();
 		}catch(Exception e) { System.out.println("Failed to query.");}
 	}
 	private static void topUseful() {
 		int num = getNumToShow();
 		if(num == -1)
 			return;
-		
+		try {
+			//Usefulness references fids, but also contains scores
+			//SELECT F.login, AVG(U.score) AS useful_score FROM Feedback F JOIN Usefulness U ON F.fid = U.fid GROUP BY login ORDER BY useful_score desc LIMIT 2;
+			String queryUseful = "SELECT F.login AS user, AVG(U.score) AS useful_score FROM Feedback F JOIN Usefulness U ON F.fid = U.fid GROUP BY F.login ORDER BY useful_score desc LIMIT "+num+";";
+			ResultSet rs = Utils.QueryHelper(queryUseful, Utils.stmt);
+			System.out.println("User\tUseful_Score");
+			System.out.println("____________________");
+			while(rs.next())
+			{
+				System.out.print(rs.getString("user") + "\t");
+				System.out.print(rs.getString("useful_score") + "\n");
+			}
+			rs.close();
+		}catch(Exception e) { System.out.println("Failed to query.");}
 	}
 	private static int getNumToShow() {
 		int num;
